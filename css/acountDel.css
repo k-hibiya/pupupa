@@ -1,0 +1,56 @@
+header ul {
+    justify-content:end;
+}
+/******************************** form *******************************/
+form {
+    padding-block-end: calc(var(--logX) * 60);
+    text-align:center;
+    margin-inline:auto;
+}
+fieldset {
+    margin-inline:auto;
+    margin-block-end:2em;
+    padding-block:3em 2em;
+    padding-inline:auto;
+    width:calc(var(--logX) * 600);
+    border:calc(var(--logX) * 2.5) solid rgb(120,200,70);
+    border-radius:calc(var(--logX) * 10);
+}
+fieldset#acountDel {
+    padding-block:3em 2em;
+    margin-block-start:3em;
+}
+p {
+    margin-block-end:1.5em;
+}
+a.anchor {
+    display:inline-flex;
+    text-decoration:none;
+    color:rgb(60,60,60);
+    font-size:1em;
+    width:calc(var(--logX) * 150);
+    height:2em;
+    justify-content:center;
+    align-items:center;
+    margin-block-end:calc(var(--logX) * 2);
+    border:calc(var(--logX) * 2) solid rgb(250,180,60);
+    border-radius:0.5em;
+}
+a.anchor:first-of-type {
+    margin-inline-end:0.5em;
+}
+a.anchor:is(:hover, :focus) {
+    outline:calc(var(--logX) * 2) solid rgb(250,180,60);
+    background-color:rgb(250,180,60);
+}
+/******************************** /form *******************************/
+/******************************** レスポンシブ　600以下 *******************************/
+@media screen and (max-width:600px) {
+    fieldset {
+        width:90%;
+    }    
+}
+/******************************** /レスポンシブ　600以下 *******************************/
+
+
+

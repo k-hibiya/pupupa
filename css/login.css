@@ -1,0 +1,104 @@
+header ul {
+    justify-content:end;
+}
+h2 {
+    margin-block:2em 1.5em;
+    font-weight:normal;
+}
+/******************************** form *******************************/
+form {
+    text-align:center;
+    margin-inline:auto;
+}
+form:nth-of-type(2) {
+    padding-block-end: calc(var(--logX) * 60); 
+}
+fieldset {
+    margin-inline:auto;
+    margin-block-end:2em;
+    padding-block:2em 2em;
+    padding-inline:auto;
+    width:calc(var(--logX) * 600);
+    border:calc(var(--logX) * 2.5) solid rgb(255,0,0,0.8);
+    border-radius:calc(var(--logX) * 10);
+}
+main > fieldset {
+    border-color:rgb(220, 220, 30);
+}
+fieldset > div {
+    display:block;
+    width:calc(var(--logX) * 400);
+    margin-inline:auto;
+    text-align:start;
+}
+fieldset div#login {
+    text-align:center;
+}
+button {
+    width:calc(var(--logX) * 150);
+    font-size:1em;
+    border:calc(var(--logX) * 2) solid rgb(250,180,60);
+    border-radius:0.5em;
+    background-color:rgb(255,255,255);
+    color:rgb(60,60,60);
+    font-weight:normal;
+}
+button > a {
+    text-decoration:none;
+    color:rgb(60,60,60);
+}
+button#loginbtn {
+        margin-block-start:0.7em;
+}
+button:is(:hover, :focus) {
+    background-color:rgb(250,180,60);
+    outline:solid calc(var(--logX) * 1.5) rgb(250,180,60);
+}
+input:not(#image) {
+    width:calc(var(--logX) * 396);
+    font-size:1em;
+    height:2em;
+    color:rgb(60,60,60);
+    padding:0.5em;
+    margin-block-end:1.5em;
+    margin-inline:calc(var(--logX) * 2);
+    border:solid 1px rgb(120,120,120);
+    border-radius:calc(var(--logX) * 5);
+}
+input:focus {
+    outline:solid calc(var(--logX) * 1.5) rgb(60,170,250);
+} 
+label {
+    display:block;
+    margin-block-end:0.2em;
+    margin-inline-start:0.5em;
+}
+div#error {
+    color:rgb(255,0,0);
+    padding-inline-start:0.5em;
+}
+/******************************** /form *******************************/
+/******************************** レスポンシブ　600以下 *******************************/
+@media screen and (max-width:600px) {
+    fieldset {
+        width:90%;
+    }    
+}
+/******************************** /レスポンシブ　600以下 *******************************/
+/******************************** レスポンシブ　440以下 *******************************/
+@media screen and (max-width:440px) {
+    :root {
+        --baseW:440px;
+        --logX:calc(var(--baseW) / 440);
+    }
+    fieldset > div {
+        width:90%;
+    }
+    fieldset > div > input:not(#image,#bDay) {
+        width:calc(100% - (var(--logX) * 4));
+    }
+}
+/******************************** /レスポンシブ　440以下 *******************************/
+
+
+

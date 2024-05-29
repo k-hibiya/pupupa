@@ -1,0 +1,294 @@
+p#mado {
+    display:flex;
+    position:fixed;
+    inset-inline-start:calc((100vw - (var(--logX) * 600)) / 2);
+    height:calc(var(--logX) * 30);
+    width:calc(var(--logX) * 600);
+    font-size:1em;
+    line-height:1.3;
+    justify-content:center;
+    align-items:center;
+    margin-inline:auto;
+    background-color:rgb(255,255,255);
+    border-inline-start:1px solid rgb(200,200,200);
+    border-inline-end:1px solid rgb(200,200,200);
+    z-index:1;
+}
+    /******************************** form ******************************/
+    form#formBox {
+        display:none;
+        position:fixed;
+        overflow:auto;
+        width:100%;
+        height:calc(100vh - (var(--logX) * 60));
+        text-align:center;
+        opacity:0;
+        background-color:rgb(255,255,255);
+        padding-block:calc(var(--logX) * 40) calc(var(--logX) * 150);
+        text-align:center;
+        margin-inline:auto;
+    }
+    fieldset {
+        margin-inline:auto;
+        margin-block-end:1.5em;
+        padding-block:1.5em 0.5em;
+        padding-inline:auto;
+        width:calc(var(--logX) * 600);
+        border:calc(var(--logX) * 2.5) solid rgb(255,0,0);
+        border-radius:calc(var(--logX) * 10);
+    }
+    fieldset:nth-of-type(2){
+        border-color:rgb(120,200,70);
+    }
+    fieldset:nth-of-type(3){
+        border-color:rgb(60,170,250);
+        padding-inline:auto;
+    }
+    /* fieldset:nth-of-type(4){
+        border-color:rgb(60,170,250);
+    } */
+    fieldset:nth-of-type(2) > div {
+        display:flex;
+        width:calc(var(--logX) * 280);
+        justify-content:space-between;
+        margin-inline:auto;
+        margin-block-end:1em;
+    }
+    fieldset:nth-of-type(2) > div:first-of-type {
+        justify-content:center;
+    }
+    fieldset label {
+        display:block;
+        margin-block-end:0.8em;
+        cursor:pointer;
+    }
+    label:is(:hover, :focus) {
+        color:rgb(255,0,0);
+    }
+    fieldset input {
+        accent-color:rgb(120,200,70);
+        cursor:pointer;
+    }
+    fieldset:not(:nth-of-type(2)) input {
+        margin-block-end:1em;
+    }
+    fieldset:nth-of-type(2) input {
+        accent-color:rgb(250,180,60);
+    }
+    fieldset:nth-of-type(3) input {
+        accent-color:rgb(255,0,0);
+    }
+    /* fieldset:nth-of-type(4) input {
+        accent-color:rgb(220, 220, 30);
+    } */
+    button {
+        width:calc(var(--logX) * 150);
+        height:calc(var(--logX) * 30);
+        font-size:1em;
+        line-height:1;
+        border:calc(var(--logX) * 2) solid rgb(250,180,60);
+        border-radius:0.5em;
+        background-color:rgb(255,255,255);
+        color:rgb(60,60,60);
+        font-weight:normal;
+        cursor:pointer;
+    }
+    button:is(:hover, :focus) {
+        background-color:rgb(250,180,60);
+        border-color:rgb(250,180,60);
+        outline:calc(var(--logX) * 1.5) solid rgb(250,180,60)
+}
+/******************************** /form *******************************/
+    /******************************** table *******************************/
+    table {
+        width:calc(var(--logX) * 600);
+        height:auto;
+        border-collapse:collapse;
+        margin-inline:auto;
+        margin-block-start:calc(var(--logX) * 70);
+    }
+    th,td {
+        border:1px solid rgb(200,200,200);
+        width:50%;
+        height:calc(var(--logX)*40);
+        line-height:1.3;
+        color:rgb(60,60,60);
+    }
+    th {
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        font-size:1em;
+        width:calc(var(--logX) * 300);
+        text-align:center;
+        background-color:rgb(255, 255, 255);
+        height:calc(var(--logX) * 40);
+        color:rgb(60,60,60);
+        z-index:1;
+    }
+    th:nth-of-type(1) {
+        position:fixed;
+        inset-block-start:calc(var(--logX) * 90);
+        inset-inline-start:calc((100vw - (var(--logX) * 600)) / 2);
+    }
+    th:nth-of-type(2) {
+        position:fixed;
+        inset-block-start:calc(var(--logX) * 90);
+        inset-inline-start:calc(((100vw - (var(--logX) * 600)) / 2) + (var(--logX) * 300));
+        border-inline-start:none;
+    }
+    th > :is(span#y, span#k) {
+        border-block-end:calc(var(--logX) * 3) solid rgb(255,0,0);
+    }
+    th > span#k {
+        border-block-end:calc(var(--logX) * 3) solid rgb(120,200,70);
+    }
+    td:first-of-type,td:nth-of-type(2) {
+        border-top:none;
+    }
+    td.YandO {
+        font-size:1.3em;
+        vertical-align:middle;
+        text-align:center;
+        cursor:pointer;
+    }
+    td.YandO:nth-of-type(even) {
+        pointer-events:none;
+    }
+    td.YandO:nth-of-type(odd):is(:hover, :focus) {
+        background-color:rgb(120,200,70);
+    }
+    /* td.info,td.img,td.caption {
+        display:none;
+    } */
+    /* td > a {
+        display:flex;
+        text-decoration:none;
+        width:100%;
+        height:100%;
+        justify-content:center;
+        align-items:center;
+        color:rgb(60,60,60);
+    }
+    td:has(a:not(span#edit > a)):is(:hover, :focus) {
+        background-color:rgb(120,200,70);
+    } */
+    td > div > img {
+        width:100%;
+        height:auto;
+        vertical-align:top;
+    }
+    td.img > div {
+        display:block;
+        width:100%;
+        max-height:calc(var(--logX) * 900);
+        overflow:auto;
+    }
+    :is(th, td) > span {
+        display:inline-block;
+    }
+    td:not(td.img) {
+        padding-inline:1em;
+    }
+    td.info {
+        text-align:start;
+        font-size:1em;
+        height:calc(var(--logX) * 30);
+    }
+    td.caption {
+        text-align:start;
+        padding-block-end:2em;
+        text-align:justify;
+        justify-content:inter-character;
+        font-size:1em;
+    }
+    td > span#date {
+        display:block;
+        font-size:0.8em;
+    }
+    img#yajirusi {
+        height:1em;
+        width:auto;
+        margin-inline-end:0.5em;
+        transform:translateY(0.07em);
+        z-index:0;
+    }
+    td.caption > span:first-child {
+        font-weight:bold;
+        margin-inline-end:0.5em;
+        padding-block-start:0.3em;
+    }
+    td.caption > span:last-child {
+        color:rgb(120,120,120);
+    }
+    /******************************** /table *******************************/
+/******************************** レスポンシブ　600以下 *******************************/
+@media screen and (max-width:600px) {
+    fieldset {
+        width:90%;
+    }
+    table {
+        width:100%;
+    }
+    p#mado {
+        width:100%;
+    }    
+}
+/******************************** /レスポンシブ　600以下 *******************************/
+/******************************** レスポンシブ　440以下 *******************************/
+@media screen and (max-width:440px) {
+/*--------------- main --------------*/
+p#mado {
+    /* display:flex;
+    position:fixed; */
+    inset-inline-start:0;
+    height:calc(var(--logX) * 30);
+    width:100%;
+    /* font-size:1em;
+    line-height:1.3;
+    justify-content:center;
+    align-items:center;
+    margin-inline:auto;
+    background-color:rgb(255,255,255);
+    border-inline-start:1px solid rgb(200,200,200);
+    border-inline-end:1px solid rgb(200,200,200);
+    z-index:1; */
+}    
+    /*--------------- form --------------*/
+    form#formBox {
+        padding-block:calc(var(--logX) * 40) calc(var(--logX) * 200);
+    }
+    fieldset:nth-of-type(2) > div {
+        width:70%;
+    }
+    form#formBox button {
+        color:rgb(60,60,60);
+    }
+    /*--------------- form --------------*/
+    /*--------------- table --------------*/
+    td.YandO {
+        font-size:1.1em;
+    }   
+    th {
+        width:50%;
+        font-size:1em;
+    }
+    th:nth-of-type(1) {
+        position:fixed;
+        inset-block-start:calc((var(--logX) * 110) + 0.5rem);
+        inset-inline-start:0;
+    }
+    th:nth-of-type(2) {
+        position:fixed;
+        inset-block-start:calc((var(--logX) * 110) + 0.5rem);
+        inset-inline-start:50%;
+        border-inline-start:none;
+    }
+
+    td:not(td.img) {
+        padding-inline:0.5em;
+    }    
+    /*--------------- table --------------*/
+/*--------------- main --------------*/
+}
+/******************************** /レスポンシブ　440以下 *******************************/

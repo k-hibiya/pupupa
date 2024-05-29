@@ -1,0 +1,195 @@
+@charset "utf-8";
+* {
+    margin: 0px;
+    padding: 0px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+    box-sizing:border-box;
+}
+:root {
+    line-height:1;
+    font-family:"Yu Gothic", "游ゴシック", "游ゴシック体", "Noto Sans JP", "Noto Sans CJK JP", "Arial", "Helvetica", "Hiragino Sans","ヒラギノ角ゴシック", sans-serif;
+    --baseW:100vw;
+    --logX:(var(--baseW) / 1280);
+    font-size:max(14px, var(--logX) * 16);
+    color:rgb(60,60,60);
+    background-color:rgb(255, 255, 255);
+}
+header, main, footer, section, article, aside, nav, figure, blockquote, div{
+    position:relative;
+    overflow:hidden;
+}
+p {
+    font-size:max(14px,1em);
+    line-height:1.3;
+}
+
+/******************************** header ******************************/
+header {
+    display:flex;
+    position:fixed;
+    width:100%;
+    height:calc(var(--logX) * 60);
+    z-index:3;
+    justify-content:center;
+    align-items:center;
+    background-color:rgb(255,255,255);    
+    border-block-end:1px solid rgb(200,200,200);
+}
+header > h1 {
+    display:inline-block;
+    position:absolute;
+    inset-inline-start:0px;
+    inset-block-start:0px;
+    height:calc(var(--logX) * 60);
+    width:calc(var(--logX) * 120);
+    margin-inline-start:0.5em;
+    cursor:pointer;
+}
+h1 > a {
+    height:calc(var(--logX) * 60);
+    width:calc(var(--logX) * 120);
+}
+h1 > a > img {
+    width:100%;
+    vertical-align:top;
+}
+nav > ul {
+    display:flex;
+    justify-content:space-between;
+    width:calc(var(--logX) * 600);
+    list-style:none;
+    padding-inline:0.5em;
+}
+nav li {
+    display:inline-block;
+    height:calc(var(--logX) * 60);
+    width:calc(var(--logX) * 60);
+
+}
+li >  a {
+    display:block;
+    position:relative;
+    width:calc(var(--logX) * 60);
+    height:calc(var(--logX) * 60);
+    color:rgb(60,60,60);
+}
+li > p {
+    display:block;
+    position:relative;
+    width:calc(var(--logX) * 60);
+    height:calc(var(--logX) * 60);
+    cursor:pointer;
+}
+nav span.img {
+	opacity: 1;
+}
+nav span.moji {
+	display: flex;
+	position: absolute;
+	inset-inline-start: 0;
+	inset-block-start: 0;
+    width:calc(var(--logX) * 60);
+    height:calc(var(--logX) * 60);
+    text-align:center;
+    justify-content:center;
+    align-items:center;
+	font-size:0.7em;
+    line-height:1.3;
+	opacity: 0;
+}
+nav span.img {
+	transition: opacity 0.2s linear 0s;
+}
+nav :is(a:hover, p:hover) span.img {
+	opacity: 0.2;
+}
+nav span.moji {
+	transition: opacity 0.2s linear 0s;
+}
+nav :is(a:hover, p:hover) span.moji {
+	opacity: 1;
+}
+/******************************** /header *******************************/
+/******************************** main *******************************/
+main {
+    padding-block-start:calc(var(--logX) * 60);
+    text-align:center;
+}
+/******************************** /main *******************************/
+/******************************** レスポンシブ　1280以下 *******************************/
+@media screen and (max-width:1280px) {
+    :root {
+        --baseW:1280px;
+    }
+}
+/******************************** /レスポンシブ　1280以下 *******************************/
+/******************************** レスポンシブ　960以下 *******************************/
+@media screen and (max-width:960px) {
+    header {
+        justify-content:end;
+    }
+    nav > ul {
+        justify-content:normal;
+        width:auto;
+        margin-inline-end:calc((100vw - (var(--logX) * 600)) / 2 );
+    }
+}
+/******************************** /レスポンシブ　960以下 *******************************/
+/******************************** レスポンシブ　600以下 *******************************/
+@media screen and (max-width:600px) {
+    :root {
+        --baseW:100vw;
+        --logX:calc(var(--baseW) / 600)
+    }
+}
+/******************************** /レスポンシブ　600以下 *******************************/
+/******************************** レスポンシブ　440以下 *******************************/
+@media screen and (max-width:440px) {
+    :root {
+        --baseW:440px;
+        --logX:calc(var(--baseW) / 440)
+    }
+/*--------------- header --------------*/
+    header {
+        display:block;
+        height:auto;
+        border-block-end:1px solid rgb(200,200,200);
+    }
+    header > h1 {
+        position:relative;
+        height:calc(var(--logX) * 30);
+        width:calc(var(--logX) * 60);  
+        margin-block-start:0.5rem; 
+        margin-inline-start:0.5rem;
+    }
+    nav > ul {
+        justify-content:space-between;
+        width:100%;
+        margin-inline-end:0;
+        padding-inline:1.2em;
+    }
+    ul > li {
+        height:calc(var(--logX) * 50);
+        width:calc(var(--logX) * 50);
+    }
+    li >  a {
+        width:calc(var(--logX) * 50);
+        height:calc(var(--logX) * 50);
+    }
+    li > p {
+        width:calc(var(--logX) * 50);
+        height:calc(var(--logX) * 50);
+    }
+    
+    nav span.moji {
+        width:calc(var(--logX) * 50);
+        height:calc(var(--logX) * 50);
+        font-size:0.6em;
+    }
+/*--------------- header --------------*/
+main {
+    padding-block-start:calc((var(--logX) * 80) + 0.5rem);
+}
+}
+/******************************** /レスポンシブ　440以下 *******************************/

@@ -1,0 +1,166 @@
+header ul {
+    justify-content:end;
+}
+h2 {
+    margin-block:1.5em 1.5em;
+    font-weight:normal;
+}
+/******************************** form *******************************/
+form {
+    padding-block-end: calc(var(--logX) * 60);
+    text-align:center;
+    margin-inline:auto;
+}
+fieldset {
+    margin-inline:auto;
+    margin-block-end:2em;
+    padding-block:3em 2em;
+    padding-inline:auto;
+    width:calc(var(--logX) * 600);
+    border:calc(var(--logX) * 2.5) solid rgb(220, 220, 30);
+    border-radius:calc(var(--logX) * 10);
+}
+fieldset > div {
+    display:block;
+    width:calc(var(--logX) * 400);
+    margin-inline:auto;
+    text-align:start;
+}
+fieldset > div#message {
+    text-align:center;
+}
+button {
+    width:calc(var(--logX) * 150);
+    margin-block-start:1em;
+    font-size:1em;
+    border:calc(var(--logX) * 2) solid rgb(250,180,60);
+    border-radius:0.5em;
+    background-color:rgb(255,255,255);
+    color:rgb(60,60,60);
+    font-weight:normal;
+}
+div#buttonBox {
+    padding-inline-start:calc(var(--logX) * 2);
+}
+button:is(#create, #del) {
+    width:calc(var(--logX) * 50);
+    margin-block:1em 1em;
+}
+button#create {
+    margin-inline-end:0.5em;
+}
+button#del {
+    border:calc(var(--logX) * 2) solid rgb(60,170,250);
+    background-color:rgb(255,255,255);
+}
+button:is(:hover, :focus) {
+    background-color:rgb(250,180,60);
+    outline:solid calc(var(--logX) * 1.5) rgb(250,180,60);
+}
+button#del:is(:hover, :focus) {
+    background-color:rgb(60,170,250);
+    outline:solid calc(var(--logX) * 1.5) rgb(60,170,250);
+}
+input:not(#image) {
+    width:calc(var(--logX) * 396);
+    font-size:1em;
+    height:2em;
+    color:rgb(60,60,60);
+    padding:0.5em;
+    margin-block-end:1.5em;
+    margin-inline:calc(var(--logX) * 2);
+    border:solid 1px rgb(120,120,120);
+    border-radius:calc(var(--logX) * 5);
+}
+input:focus {
+    outline:solid calc(var(--logX) * 1.5) rgb(60,170,250);
+}
+input#bDay {
+    width:50%;
+}
+p {
+    margin-block-end:1.5em;
+}
+a.anchor {
+    display:inline-flex;
+    text-decoration:none;
+    color:rgb(60,60,60);
+    font-size:1em;
+    width:calc(var(--logX) * 150);
+    height:2em;
+    justify-content:center;
+    align-items:center;
+    margin-block-end:calc(var(--logX) * 2);
+    border:calc(var(--logX) * 2) solid rgb(250,180,60);
+    border-radius:0.5em;
+}
+a.anchor:first-of-type {
+    margin-inline-end:0.5em;
+}
+a.anchor:is(:hover, :focus) {
+    outline:calc(var(--logX) * 2) solid rgb(250,180,60);
+    background-color:rgb(250,180,60);
+}
+
+/***************** signUp用 *****************/
+label#kodomo_name {
+    margin-block-start:2em;
+}
+/***************** /signUp用 *****************/
+label {
+    display:block;
+    margin-block-end:0.2em;
+    margin-inline-start:0.5em;
+}
+div#error {
+    color:rgb(255,0,0);
+    padding-inline-start:0.5em;
+}
+span.required {
+    display:inline-block;
+    font-size:1em;
+    margin-inline:0.5em;
+    color:rgb(255,0,0);
+    border-radius:calc(var(--logX) * 2);
+    background-color:rgb(255,255,255);
+    opacity:1;
+}
+p > span.required {
+    margin-inline:0;
+}
+p:has(span.required) {
+    text-align:center;
+    margin-block-end:1.5em;
+}
+/******************************** /form *******************************/
+/******************************** レスポンシブ　600以下 ******************************/
+@media screen and (max-width:600px) {
+    fieldset {
+        width:90%;
+    }    
+}
+/******************************** /レスポンシブ　600以下 *******************************/
+/******************************** レスポンシブ　440以下 *******************************/
+@media screen and (max-width:440px) {
+    :root {
+        --baseW:440px;
+        --logX:calc(var(--baseW) / 440);
+    }
+    fieldset > div {
+        width:90%;
+    }
+    fieldset > div > input:not(#image,#bDay) {
+        width:calc(100% - (var(--logX) * 4));
+    }
+    input#kName {
+        width:calc(100% - (var(--logX) * 4));
+    }
+    input#bDay {
+        width:50%;
+    }
+
+}
+/******************************** /レスポンシブ　440以下 *******************************/
+
+
+
