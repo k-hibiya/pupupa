@@ -53,7 +53,8 @@
         <fieldset>
         <?php
             //↓検索フォームで、こどもの数が一人だったらlegend無し。複数いたら、"だれか選んでください"のlegendあり
-            $sql = "select count(kodomo_id) from kodomo where user_name = '$user_name'";
+            // $sql = "select count(kodomo_id) from kodomo join user on main.user_id = user.user_id where user.user_name = '$user_name'";
+            $sql = "select count(kodomo_id) from kodomo join user on kodomo.user_id = user.user_id where user.user_name = '$user_name'";
             $stmt=$pdo->prepare($sql);
             $count=$stmt->execute();
             $count = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -63,7 +64,7 @@
         <?php
             } 
             //↓子供の名前のラジオボタンを人数分作る
-            $sql = "select kodomo_name, kodomo_id from kodomo where user_name = '{$user_name}'";
+            $sql = "select kodomo_id,kodomo_name from kodomo join user on kodomo.user_id = user.user_id where user_name = '$user_name'";
             $stmt=$pdo->prepare($sql);
             $row=$stmt->execute();
             while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
@@ -163,7 +164,7 @@
             <legend>どちらか選んでください</legend>
             <div>
                 <label><input name="sort" type="radio" value="asc" checked="checked">あいうえお順</label>
-                <label><input name="sort" type="radio" value="post_date">新着順</label>
+                <label><input name="sort" type="radio" value="posted_at">新着順</label>
             </div>       
         </fieldset>
         <button type="submit" value="検索">検索</button>
@@ -176,7 +177,7 @@ if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作�
         // $photo = "1";
         $YorO = "youjigo";
         $initial = "すべて";
-        $sort = "post_date";
+        $sort = "posted_at";
         $kodomo_id = "みんな";
         $kodomo_name = "みんな";
     }else if(isset($_GET['YorO'])) { //formが送られてきた場合のSQL作成用の変数定義
@@ -204,7 +205,7 @@ if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作�
     if($count['count(kodomo_id)'] >= 2){ //こどもの人数が二人以上だったら見出しの始まりが ”みんな・” となる
         $searchMessage = $kodomo_name."・";
     }else if($count['count(kodomo_id)'] == 1){ //こどもが一人だったら見出しの始まりが ”こどもの名前・” となる
-        $sql = "select kodomo_name from kodomo where user_name = '{$user_name}'";
+        $sql = "select kodomo_name from kodomo join user on kodomo.user_id = user.user_id where user_name = '{$user_name}'";
         $stmt=$pdo->prepare($sql);
         $row=$stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -241,9 +242,9 @@ if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作�
         require_once('mojiset.php'); /*$initialで選ばれた文字ごとの文字のセットを返す mojiset() が入っている。
                                     　  例、　$initial＝”は”　だったら、"は,ば,ぱ"の配列を返す。*/     
         if(isset($YorO)){
-            $sql = "select id, main.user_name, kodomo_name, youjigo, otonago, kana, image, 
-                    caption, age, post_date, disp_st, del_st from main 
-                    join user on main.user_name = user.user_name 
+            $sql = "select main_id, user_name, kodomo_name, youjigo, otonago, kana, photo, 
+                    caption, age, posted_at, is_deleted from main 
+                    join user on main.user_id = user.user_id 
                     join kodomo on main.kodomo_id = kodomo.kodomo_id 
                     join age on main.age_id = age.age_id ";
             if(isset($initial)){
@@ -256,18 +257,18 @@ if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作�
                 $initial == "や" || $initial == "ゆ" || $initial == "よ" || 
                 $initial == "ら" || $initial == "り" || $initial == "る" || $initial == "れ" || $initial == "ろ" || 
                 $initial == "わ" || $initial == "を" || $initial == "ん") {
-                $sql = $sql."where del_st = 0 and $YorO like '$mojiset%' and main.user_name = '$user_name' ";
+                $sql = $sql."where is_deleted = 0 and $YorO like '$mojiset%' and user_name = '$user_name' ";
                 }else if($initial == "か" || $initial == "き" || $initial == "く" || $initial == "け" || $initial == "こ" || 
                         $initial == "さ" || $initial == "し" || $initial == "す" || $initial == "せ" || $initial == "そ" || 
                         $initial == "た" || $initial == "ち" || $initial == "つ" || $initial == "て" || $initial == "と") {
-                    $sql = $sql."where del_st = 0 and $YorO like '$mojiset[0]%' and main.user_name = '$user_name' 
-                            or del_st = 0 and $YorO like '$mojiset[1]%' and main.user_name = '$user_name' ";
+                    $sql = $sql."where is_deleted = 0 and $YorO like '$mojiset[0]%' and user_name = '$user_name' 
+                            or is_deleted = 0 and $YorO like '$mojiset[1]%' and user_name = '$user_name' ";
                 }else if($initial == "は" || $initial == "ひ" || $initial == "ふ" || $initial == "へ" || $initial == "ほ") {
-                    $sql = $sql."where main.kodomo_id = $kodomo_id and del_st = 0 and $YorO like '$mojiset[0]%' 
-                            or del_st = 0 and $YorO like '$mojiset[1]%' and main.user_name = '$user_name' 
-                            or del_st = 0 and $YorO like '$mojiset[2]%' and main.user_name = '$user_name' ";
+                    $sql = $sql."where is_deleted = 0 and $YorO like '$mojiset[0]%' and user_name = '$user_name' 
+                            or is_deleted = 0 and $YorO like '$mojiset[1]%' and user_name = '$user_name' 
+                            or is_deleted = 0 and $YorO like '$mojiset[2]%' and user_name = '$user_name' ";
                 }else if($initial == "すべて"){
-                    $sql = $sql."where del_st = 0 and main.user_name = '$user_name' ";
+                    $sql = $sql."where is_deleted = 0 and user_name = '$user_name' ";
                 }
            }else if($kodomo_id != 'みんな'){
                 if($initial == "あ" || $initial == "い" || $initial == "う" || $initial == "え" || $initial == "お" || 
@@ -276,21 +277,21 @@ if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作�
                 $initial == "や" || $initial == "ゆ" || $initial == "よ" || 
                 $initial == "ら" || $initial == "り" || $initial == "る" || $initial == "れ" || $initial == "ろ" || 
                 $initial == "わ" || $initial == "を" || $initial == "ん") {
-                $sql = $sql."where main.kodomo_id = $kodomo_id and del_st = 0 and $YorO like '$mojiset%' and main.user_name = '$user_name' ";
+                $sql = $sql."where main.kodomo_id = $kodomo_id and is_deleted = 0 and $YorO like '$mojiset%' and user_name = '$user_name' ";
                 }else if($initial == "か" || $initial == "き" || $initial == "く" || $initial == "け" || $initial == "こ" || 
                         $initial == "さ" || $initial == "し" || $initial == "す" || $initial == "せ" || $initial == "そ" || 
                         $initial == "た" || $initial == "ち" || $initial == "つ" || $initial == "て" || $initial == "と") {
-                    $sql = $sql."where main.kodomo_id = $kodomo_id and  del_st = 0 and $YorO like '$mojiset[0]%' and main.user_name = '$user_name' 
-                            or main.kodomo_id = $kodomo_id and  del_st = 0 and $YorO like '$mojiset[1]%' and main.user_name = '$user_name' ";
+                    $sql = $sql."where main.kodomo_id = $kodomo_id and  is_deleted = 0 and $YorO like '$mojiset[0]%' and user_name = '$user_name' 
+                            or main.kodomo_id = $kodomo_id and  is_deleted = 0 and $YorO like '$mojiset[1]%' and user_name = '$user_name' ";
                 }else if($initial == "は" || $initial == "ひ" || $initial == "ふ" || $initial == "へ" || $initial == "ほ") {
-                    $sql = $sql."where main.kodomo_id = $kodomo_id and del_st = 0 and $YorO like '$mojiset[0]%' and main.user_name = '$user_name' 
-                            or main.kodomo_id = $kodomo_id and  del_st = 0 and $YorO like '$mojiset[1]%' and main.user_name = '$user_name' 
-                            or main.kodomo_id = $kodomo_id and  del_st = 0 and $YorO like '$mojiset[2]%' and main.user_name = '$user_name' ";
+                    $sql = $sql."where main.kodomo_id = $kodomo_id and is_deleted = 0 and $YorO like '$mojiset[0]%' and user_name = '$user_name' 
+                            or main.kodomo_id = $kodomo_id and  is_deleted = 0 and $YorO like '$mojiset[1]%' and user_name = '$user_name' 
+                            or main.kodomo_id = $kodomo_id and  is_deleted = 0 and $YorO like '$mojiset[2]%' and user_name = '$user_name' ";
                 }else if($initial == "すべて"){
-                    $sql = $sql."where main.kodomo_id = $kodomo_id and del_st = 0 and main.user_name = '$user_name' ";
+                    $sql = $sql."where main.kodomo_id = $kodomo_id and is_deleted = 0 and user_name = '$user_name' ";
                 }
             }
-            if($sort == "post_date") {
+            if($sort == "posted_at") {
                 $sql = $sql."order by birthday desc, main.age_id desc";
             }else if($YorO == "youjigo") {
                 $sql = $sql."order by youjigo asc";
@@ -341,19 +342,19 @@ if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作�
                 $user_name = hsc($row['user_name']);
                 $youjigo = hsc($row['youjigo']);
                 $otonago = hsc($row['otonago']);
-                $id = hsc($row['id']);
+                $main_id = hsc($row['main_id']);
                 $kodomo_name = hsc($row['kodomo_name']);
                 $age = hsc($row['age']);
-                $post_date = hsc($row['post_date']);
+                $posted_at = hsc($row['posted_at']);
                 $caption = hsc($row['caption']);
-                $image = hsc($row['image']);
-                $date = hsc($row['post_date']);
+                $photo = hsc($row['photo']);
+                $date = hsc($row['posted_at']);
                 $date_create = date_create($date);
                 $date2 = date_format($date_create,'Y年m月d日');
         
-                $src = "upImages/".$user_name."/".$image;
+                $src = "upImages/".$user_name."/".$photo;
 
-                if($row['image'] == ""){ //写真をアップロードしないユーザー用の画像。乱数で挿入される
+                if($row['photo'] == ""){ //写真をアップロードしないユーザー用の画像。乱数で挿入される
                     $num = mt_rand(1,6);
                     switch($num){
                         case 1:
@@ -379,10 +380,10 @@ if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作�
                 if($YorO == "youjigo" && $sort == "asc") { //検索キーワードがようじ語・あいうえお順だったら
                     ?>       
                     <tr >
-                        <td class="info" id="<?=$youjigo?><?=$id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
+                        <td class="info" id="<?=$youjigo?><?=$main_id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
                             <img id="yajirusi" src="images/yajirusi.svg"><span><?=$user_name?></span>・<span><?=$kodomo_name?></span>・<span><?=$age?></span>
                             <!-- ↓ 編集ボタン(a要素)には、幼児語編集画面へ遷移後のSQL作成用URLパラメータを持たせている -->       
-                            <span id="edit"><a href="youjigoEdit.php?photo=<?=$photo?>&YorO=<?=$YorO?>&initial=<?=$initial?>&kodomo_id=<?=$kodomo_id?>&sort=<?=$sort?>&id=<?=$id?>&age=<?=$age?>">編集</a></span>
+                            <span id="edit"><a href="youjigoEdit.php?photo=<?=$photo?>&YorO=<?=$YorO?>&initial=<?=$initial?>&kodomo_id=<?=$kodomo_id?>&sort=<?=$sort?>&main_id=<?=$main_id?>&age=<?=$age?>">編集</a></span>
                         </td>
                     </tr> 
                     <tr >
@@ -403,10 +404,10 @@ if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作�
                 }else if($YorO == "kana" && $sort == "asc") { //検索キーワードがおとな語・あいうえお順だったら
         ?>        
                     <tr >
-                        <td class="info" id="<?=$otonago?><?=$id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
+                        <td class="info" id="<?=$otonago?><?=$main_id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
                             <img id="yajirusi" src="images/yajirusi.svg"><span><?=$user_name?></span>・<span><?=$kodomo_name?></span>・<span><?=$age?></span>
                             <!-- ↓ 編集ボタン(a要素)には、幼児語編集画面へ遷移後のSQL作成用URLパラメータを持たせている -->       
-                            <span id="edit"><a href="youjigoEdit.php?photo=<?=$photo?>&YorO=<?=$YorO?>&initial=<?=$initial?>&kodomo_id=<?=$kodomo_id?>&sort=<?=$sort?>&id=<?=$id?>&age=<?=$age?>">編集</a></span>
+                            <span id="edit"><a href="youjigoEdit.php?photo=<?=$photo?>&YorO=<?=$YorO?>&initial=<?=$initial?>&kodomo_id=<?=$kodomo_id?>&sort=<?=$sort?>&main_id=<?=$main_id?>&age=<?=$age?>">編集</a></span>
                         </td>
                     </tr> 
                     <tr >
@@ -424,13 +425,13 @@ if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作�
                         <td class="caption" colspan="2"><span><?=$user_name?></span><?=$caption?><span id="date"><?=$date2?></span></td>
                     </tr> 
         <?php
-                }else if($YorO == "youjigo" && $sort == "post_date"){ //検索キーワードがようじ語・新着順だったら
+                }else if($YorO == "youjigo" && $sort == "posted_at"){ //検索キーワードがようじ語・新着順だったら
                     ?>
                     <tr >
-                        <td class="info" id="<?=$youjigo?><?=$id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
+                        <td class="info" id="<?=$youjigo?><?=$main_id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
                             <img id="yajirusi" src="images/yajirusi.svg"><span><?=$user_name?></span>・<span><?=$kodomo_name?></span>・<span><?=$age?></span>
                             <!-- ↓ 編集ボタン(a要素)には、幼児語編集画面へ遷移後のSQL作成用URLパラメータを持たせている -->       
-                            <span id="edit"><a href="youjigoEdit.php?photo=<?=$photo?>&YorO=<?=$YorO?>&initial=<?=$initial?>&kodomo_id=<?=$kodomo_id?>&sort=<?=$sort?>&id=<?=$id?>&age=<?=$age?>">編集</a></span>
+                            <span id="edit"><a href="youjigoEdit.php?photo=<?=$photo?>&YorO=<?=$YorO?>&initial=<?=$initial?>&kodomo_id=<?=$kodomo_id?>&sort=<?=$sort?>&main_id=<?=$main_id?>&age=<?=$age?>">編集</a></span>
                         </td>
                     </tr> 
                     <tr >
@@ -448,13 +449,13 @@ if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作�
                         <td class="caption" colspan="2"><span><?=$user_name?></span><?=$caption?><span id="date"><?=$date2?></span></td>
                     </tr> 
         <?php  
-                }else if($YorO == "kana" && $sort == "post_date") { //検索キーワードがおとな語・新着順だったら
+                }else if($YorO == "kana" && $sort == "posted_at") { //検索キーワードがおとな語・新着順だったら
         ?>        
                     <tr >
-                        <td class="info" id="<?=$otonago?><?=$id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
+                        <td class="info" id="<?=$otonago?><?=$main_id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
                             <img id="yajirusi" src="images/yajirusi.svg"><span><?=$user_name?></span>・<span><?=$kodomo_name?></span>・<span><?=$age?></span>
                             <!-- ↓ 編集ボタン(a要素)には、幼児語編集画面へ遷移後のSQL作成用URLパラメータを持たせている -->       
-                            <span id="edit"><a href="youjigoEdit.php?photo=<?=$photo?>&YorO=<?=$YorO?>&initial=<?=$initial?>&kodomo_id=<?=$kodomo_id?>&sort=<?=$sort?>&id=<?=$id?>&age=<?=$age?>">編集</a></span>
+                            <span id="edit"><a href="youjigoEdit.php?photo=<?=$photo?>&YorO=<?=$YorO?>&initial=<?=$initial?>&kodomo_id=<?=$kodomo_id?>&sort=<?=$sort?>&main_id=<?=$main_id?>&age=<?=$age?>">編集</a></span>
                         </td>
                     </tr> 
                     <tr >

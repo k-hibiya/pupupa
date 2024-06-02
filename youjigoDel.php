@@ -35,7 +35,7 @@
     ?>
     <fieldset id="acountDel">
         <p>"<?=$youjigo?>"を削除しました。</p>
-        <a class="anchor" href="mypage.php?photo=<?=$photo?>&YorO=<?=$YorO?>&initial=<?=$initial?>&kodomo_id=<?=$kodomo_id?>&sort=<?=$sort?>">マイページ</a>
+        <a class="anchor" href="mypage.php?YorO=<?=$YorO?>&initial=<?=$initial?>&kodomo_id=<?=$kodomo_id?>&sort=<?=$sort?>">マイページ</a>
     </fieldset>
 </main>
 </body>

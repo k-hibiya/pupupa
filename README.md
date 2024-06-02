@@ -123,41 +123,60 @@ PUPUPAは「こどもが何て言っているのかわからない！」そん�
 <div style="padding-inline-start:1em;">
 
 #### <span style="font-size:1em;">userテーブル</span>
-| フィールド   | Field     | Type         | Null | Key | Default | Extla |
-|---------|-----------|--------------|------|-----|---------|-------|
-| ユーザー名   | user_name | varchar(60)  | NO   | PRI | NULL    |       |
-| パスワード   | password  | varchar(60) | YES  |     | NULL    |       |
-| アカウント削除 | valid_st  | int          | NO   |    | 0    |
+| フィールド | Field | Type  | Null | Key | Default | Extla |
+|-----|-----------|--------------|------|-----|---------|-------|
+| ユーザーID | user_id | int | NO | PRI | NOT NULL |  auto_increment |
+| ユーザー名 | user_name | varchar(60)  | NO   |  | NOT NULL |       |
+| ハッシュ化パスワード   | password_hash  | varchar(255) | YES  |  | NOT NULL |   |
+| 公開設定 | is_public | boolean | no|   | DEFAULT TRUE |  |
+| アカウント有効無効 | is_active | boolean | no|   | DEFAULT TRUE |  |
 
 #### <span style="font-size:1em;">kodomoテーブル</span>
-| フィールド  | Field       | Type        | Null | Key | Default | Extla          |
+| フィールド | Field | Type | Null | Key | Default | Extla |
 |--------|-------------|-------------|------|-----|---------|----------------|
-| こどもID  | kodomo_id   | int         | NO   | PRI | NULL    | auto_increment |
-| ユーザー名  | user_name   | varchar(60) | YES  | MUL | NULL    |                |
-| こどもの名前 | kodomo_name | varchar(60) | YES  |     | NULL    |                |
-| 誕生日    | birthday    | date        | YES  |     | NULL    |
+| こどもID  | kodomo_id   | int         | NO   | PRI | NOT NULL    | auto_increment |
+| ユーザーID  | user_id   | int | NO  | MUL | NOT NULL    |                |
+| こどもの名前 | kodomo_name | varchar(60) | NO  |     | NOT NULL    |                |
+| 誕生日    | birthday    | date        | NO  |     | NOT NULL    |  |
 
 #### <span style="font-size:1em;">ageテーブル</span>
-| フィールド | Field  | Type        | Null | Key | Default | Extla |
+| フィールド | Field | Type | Null | Key | Default | Extla |
 |-------|--------|-------------|------|-----|---------|-------|
-| 月齢ID  | age_id | int         | NO   | PRI | NULL    |       |
-| 月齢    | age    | varchar(60) | YES  |     | NULL    |
+| 月齢ID | age_id | int | NO | PRI | NOT NULL | auto_increment |
+| 月齢 | age | varchar(60) | NO |  | NOT NULL |  |
 
 #### <span style="font-size:1em;">mainテーブル</span>
-| フィールド  | Field     | Type         | Null | Key | Default | Extla          |
+| フィールド  | Field | Type | Null | Key | Default | Extla |
 |--------|-----------|--------------|------|-----|---------|----------------|
-| ID     | id        | int          | NO   | PRI | NULL    | auto_increment |
-| ユーザー名  | user_name | varchar(60)  | YES  | MUL | NULL    |                |
-| こどもID  | kodomo_id | int          | YES  | MUL | NULL    |                |
-| ようじ語    | youjigo   | varchar(60)  | YES  |     | NULL    |                |
-| おとな語    | otonago   | varchar(60)  | YES  |     | NULL    |                |
-| かな     | kana      | varchar(60)  | YES  |     | NULL    |                |
-| 写真     | image     | text         | YES  |     | NULL    |                |
-| キャプション | caption   | varchar(300) | YES  |     | NULL    |                |
-| 月齢ID   | age_id    | int          | YES  | MUL | NULL    |                |
-| 投稿日    | post_date | datetime     | NO   |     | NULL    |                |
-| 公開設定    | disp_st   | int          | NO   | 0   | NULL    |       |
-| 投稿削除   | del_st    | int          | NO   | 0   | NULL    |
+| メインID | main_id | int | NO | PRI | NOT NULL | auto_increment |
+| ユーザーID | user_id | int | NO | MUL | NOT NULL |   |
+| こどもID | kodomo_id | int | NO  | MUL | NOT NULL |   |
+| ようじ語 | youjigo | varchar(60) | NO  |     | NOT NULL |   |
+| おとな語 | otonago | varchar(60) | NO  |     | NOT NULL |   |
+| かな | kana | varchar(60) | NO |   | NOT NULL |   |
+| 写真 | photo | text | YES |   | NULL |   |
+| キャプション | caption   | varchar(300) | YES  |   | NULL |   |
+| 月齢ID | age_id | int | NO  | MUL | NOT NULL |   |
+| 投稿日 | posted_at | datetime | NO |   | CURRENT_TIMESTAMP |   |
+| 最終編集日 | updated_at | datetime | NO |   | CURRENT_TIMESTAMP | ON UPDATE CURRENT_TIMESTAMP |
+| 投稿削除 | is_deleted | boolean | NO |  | DEFAULT FALSE |  |
+
+#### <span style="font-size:1em;">followテーブル</span>
+| フィールド | Field | Type | Null | Key | Default | Extla |
+|--------|-----------|--------------|------|-----|---------|----------------|
+| フォローID | follow_id | int | NO | PRI | NOT NULL | auto_increment |
+| フォロイー | followee_id | int | NO | MUL | NOT NULL |   |
+| フォロワー | follower_id | int | NO  | MUL | NOT NULL |   |
+| フォロー状態 | follow_status | boolean | NO  |     | DEFAULT FALSE |   |
+| リクエスト | otonago | boolean | NO  |     | DEFAULT FALSE |   |
+
+#### <span style="font-size:1em;">admin_kanriテーブル</span>
+| フィールド | Field | Type | Null | Key | Default | Extla |
+|--------|-----------|--------------|------|-----|---------|----------------|
+| 管理者ID | admin_id | int | NO | PRI | NOT NULL | auto_increment |
+| 管理者名 | admin_name | varchar(60) | NO |  | NOT NULL |   |
+| ハッシュ化パスワード | admin_password_hash | varchar(255) | NO  |  | NOT NULL |   |
+| 最高権限 | is_superadmin | boolean | NO  |     | DEFAULT FALSE |   |
 </div>
 
 <!-- #### ER図

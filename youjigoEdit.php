@@ -2,22 +2,13 @@
     require_once('toLogin.php');
     require_once('connect.php');
     $user_name = $_SESSION['user_name'];
-    $id = hsc($_GET['id']);
-    $photo = hsc($_GET['photo']);
+    $main_id = hsc($_GET['main_id']);
     $YorO = hsc($_GET['YorO']);
     $initial = hsc($_GET['initial']);
     $kodomo_id = hsc($_GET['kodomo_id']);
     $sort = hsc($_GET['sort']);
 
     $pdo=connect();
-    $sql = "select id, main.user_name, kodomo_name, youjigo, otonago, kana, image, 
-    caption, age, post_date, del_st from main 
-    join kodomo on main.kodomo_id = kodomo.kodomo_id 
-    join age on main.age_id = age.age_id 
-    where id = '{$id}'";
-    $stmt=$pdo->prepare($sql);
-    $stmt->execute();
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     $errorMessage="";
     $signUpMessage="";
@@ -35,7 +26,7 @@ if(isset($_POST['youjigoEdit'])){
             $uerr=true;
         }
         if(!$uerr){
-            $id=hsc($_POST['id']);
+            $main_id=hsc($_POST['main_id']);
             $photo=hsc($_POST['photo']);
             $YorO=hsc($_POST['YorO']);
             $initial=hsc($_POST['initial']);
@@ -47,21 +38,20 @@ if(isset($_POST['youjigoEdit'])){
             $caption=hsc($_POST['caption']);
             $tango=hsc($_POST['tango']);
             try{
-                $sql="update main set youjigo=?, otonago=?, kana=?, caption=? where id = ?";
+                $sql="update main set youjigo=?, otonago=?, kana=?, caption=? where main_id = ?";
                 $stmt=$pdo->prepare($sql);
-                $row=$stmt->execute(array($youjigo,$otonago,$kana,$caption,$id));
+                $row=$stmt->execute(array($youjigo,$otonago,$kana,$caption,$main_id));
 
                 if($YorO == 'youjigo'){
-                    $sql="select youjigo as kotoba from main where id = ?";
+                    $sql="select youjigo as kotoba from main where main_id = ?";
                 }else if($YorO == 'kana'){
-                    $sql="select otonago as kotoba from main where id = ?";
+                    $sql="select otonago as kotoba from main where main_id = ?";
                 }
                 $stmt=$pdo->prepare($sql);
-                $row=$stmt->execute(array($id));
+                $row=$stmt->execute(array($main_id));
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 $kotoba = hsc($row['kotoba']);
-                echo $kotoba;
-                $flag = $kotoba.$id;
+                $flag = $kotoba.$main_id;
                 header("Location: mypage.php?YorO=$YorO&initial=$initial&kodomo_id=$kodomo_id&sort=$sort#$flag");
             }catch(PDOExeption $e){
                 $errorMessage="データベースエラー";
@@ -75,25 +65,25 @@ if(isset($_POST['youjigoEdit'])){
 /**************************　↓　幼児語削除(youjigoDelete)　**************************/
     $yojigoDeleteMessage = "";
     if(isset($_POST['youjigoDelete'])){
-        $id=hsc($_POST['id']);
-        $del_st=hsc($_POST['del_st']);
+        $main_id=hsc($_POST['main_id']);
+        $is_deleted=hsc($_POST['is_deleted']);
         $photo=hsc($_POST['photo']);
         $YorO=hsc($_POST['YorO']);
         $initial=hsc($_POST['initial']);
         $kodomo_id=hsc($_POST['kodomo_id']);
         $sort=hsc($_POST['sort']);
 
-        $sql="select youjigo from main where id = {$id}";
+        $sql="select youjigo from main where main_id = $main_id";
         $stmt=$pdo->prepare($sql);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $youjigo = hsc($row['youjigo']);
 
         try{
-            $sql="update main set del_st = ? where id = ?";
+            $sql="update main set is_deleted = ? where main_id = ?";
             $stmt=$pdo->prepare($sql);
-            $row=$stmt->execute(array($del_st,$id));
-            header("Location: youjigoDel.php?photo=$photo&YorO=$YorO&initial=$initial&kodomo_id=$kodomo_id&sort=$sort&youjigo=$youjigo&id=$id");
+            $row=$stmt->execute(array($is_deleted,$main_id));
+            header("Location: youjigoDel.php?YorO=$YorO&initial=$initial&kodomo_id=$kodomo_id&sort=$sort&youjigo=$youjigo");
         }catch(PDOExeption $e){
             $errorMessage="データベースエラー";
             echo $e->getMessage();
@@ -102,14 +92,13 @@ if(isset($_POST['youjigoEdit'])){
 /**************************　↑ 　幼児語削除(youjigoDelete)　**************************/
 /**************************　↓　戻るボタン(editCancel)　**************************/
     if(isset($_POST['editCancel'])){
-            $id=hsc($_POST['id']);
-            $photo=hsc($_POST['photo']);
+            $main_id=hsc($_POST['main_id']);
             $YorO=hsc($_POST['YorO']);
             $initial=hsc($_POST['initial']);
             $kodomo_id=hsc($_POST['kodomo_id']);
             $sort=hsc($_POST['sort']);
             $tango=hsc($_POST['tango']);
-            $flag = $tango.$id;
+            $flag = $tango.$main_id;
             header("Location: mypage.php?YorO=$YorO&initial=$initial&kodomo_id=$kodomo_id&sort=$sort#$flag");
     }    
 /**************************　↑ 　戻るボタン(editCancel)　**************************/
@@ -143,20 +132,24 @@ if(isset($_POST['youjigoEdit'])){
  <h2>ようじ語編集画面</h2>
 <!----------------------------　↓ ようじ語編集(youjigoEdit) ---------------------------------->
 <?php
-    $kodomo_name = hsc($row['kodomo_name']);
+    $sql = "select youjigo, otonago, kana, photo, 
+    caption from main 
+    join age on main.age_id = age.age_id 
+    where main_id = '$main_id'";
+    $stmt=$pdo->prepare($sql);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
     $youjigo = hsc($row['youjigo']);
     $otonago = hsc($row['otonago']);
     $kana = hsc($row['kana']);
     $caption = hsc($row['caption']);
-    $youjigo = hsc($row['youjigo']);
-    $otonago = hsc($row['otonago']);
 ?>
     <form class="youjigoEdit" action="<?=$_SERVER['SCRIPT_NAME']?>" method="post">
         <fieldset>
             <div id="err"><?= $errorMessage ?></div>
             <legend>投稿を編集する</legend>
             <div>
-                <input type="hidden" name="id" value=<?=$id?>>
                 <label for="youjigo">ようじ語（ひらがな）</label>
                 <input type="text" name="youjigo" pattern="^[ぁ-ゔー]+$" autofocus value=<?=$youjigo?>>
                 <label for="otonago">おとな語</label>
@@ -165,8 +158,7 @@ if(isset($_POST['youjigoEdit'])){
                 <input type="text" name="kana" pattern="^[ぁ-ゔー]+$" value=<?=$kana?>>
                 <label for="caption">紹介文</label>
                 <textarea type="text" name="caption" rows="5"><?=$caption?></textarea>
-                <input type="hidden" name="id" value=<?=$id?>>
-                <input type="hidden" name="photo" value=<?=$photo?>>
+                <input type="hidden" name="main_id" value=<?=$main_id?>>
                 <input type="hidden" name="YorO" value=<?=$YorO?>>
                 <input type="hidden" name="initial" value=<?=$initial?>>
                 <input type="hidden" name="kodomo_id" value=<?=$kodomo_id?>>
@@ -182,8 +174,7 @@ if(isset($_POST['youjigoEdit'])){
 <form class="youjigoEdit" name="editCancel" action="<?=$_SERVER['SCRIPT_NAME']?>" method="post">
     <fieldset>
         <legend>マイページへ戻る</legend>
-        <input type="hidden" name="id" value=<?=$id?>>
-        <input type="hidden" name="photo" value=<?=$photo?>>
+        <input type="hidden" name="main_id" value=<?=$main_id?>>
         <input type="hidden" name="YorO" value=<?=$YorO?>>
         <input type="hidden" name="initial" value=<?=$initial?>>
         <input type="hidden" name="kodomo_id" value=<?=$kodomo_id?>>
@@ -207,13 +198,13 @@ if(isset($_POST['youjigoEdit'])){
 <form  name="youjigoDelete" action="<?=$_SERVER['SCRIPT_NAME']?>" method="post">
         <fieldset>
             <legend>投稿を削除する</legend>
-            <input type="hidden" name="id" value=<?=$id?>>
+            <input type="hidden" name="main_id" value=<?=$main_id?>>
             <input type="hidden" name="photo" value=<?=$photo?>>
             <input type="hidden" name="YorO" value=<?=$YorO?>>
             <input type="hidden" name="initial" value=<?=$initial?>>
             <input type="hidden" name="kodomo_id" value=<?=$kodomo_id?>>
             <input type="hidden" name="sort" value=<?=$sort?>>
-            <input type="hidden" name="del_st" value=1>
+            <input type="hidden" name="is_deleted" value=1>
             <button type="submit" name="youjigoDelete">投稿削除</button>
             <div id="youjigoDel"><?=$youjigoDeleteMessage?></div>
         </fieldset>

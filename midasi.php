@@ -102,7 +102,7 @@ function midasi($data1, $data2, $data3) {
         $midasi = $midasi."<span>ん</span><span>・";
     }
 
-    if($data3 == "post_date") {
+    if($data3 == "posted_at") {
         $midasi = $midasi."<span>新着順</span>";
     }else if($data3 == "asc") {
         $midasi = $midasi."<span>あいうえお順</span>";

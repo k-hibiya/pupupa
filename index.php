@@ -121,7 +121,7 @@
             <legend>どちらか選んでください</legend>
             <div>
                 <label><input name="sort" type="radio" value="asc" checked="checked">あいうえお順</label>
-                <label><input name="sort" type="radio" value="post_date">新着順</label>
+                <label><input name="sort" type="radio" value="posted_at">新着順</label>
             </div>       
         </fieldset>
         <button type="submit" value="検索">検索</button>
@@ -143,7 +143,7 @@
     if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作成用の変数定義
         $YorO = "youjigo";
         $initial = "すべて";
-        $sort = "post_date";
+        $sort = "posted_at";
     }else if(isset($_GET['YorO'])) { //formが送られてきた場合のSQL作成用の変数定義
         $YorO = hsc($_GET['YorO']);
         $initial = hsc($_GET['initial']);
@@ -180,9 +180,9 @@ require_once ('midasi.php'); //←名前以外の検索キーワードを見出�
         require_once('mojiset.php');
         $pdo = connect();
         if(isset($YorO)){
-            $sql = "select id, main.user_name, kodomo_name, youjigo, otonago, kana, image, 
-                    caption, age, post_date, disp_st, del_st from main 
-                    join user on main.user_name = user.user_name 
+            $sql = "select main_id, user_name, kodomo_name, youjigo, otonago, kana, photo, 
+                    caption, age, posted_at, is_public, is_deleted from main 
+                    join user on main.user_id = user.user_id 
                     join kodomo on main.kodomo_id = kodomo.kodomo_id 
                     join age on main.age_id = age.age_id ";
             if(isset($initial)){
@@ -194,21 +194,21 @@ require_once ('midasi.php'); //←名前以外の検索キーワードを見出�
                     $initial == "や" || $initial == "ゆ" || $initial == "よ" || 
                     $initial == "ら" || $initial == "り" || $initial == "る" || $initial == "れ" || $initial == "ろ" || 
                     $initial == "わ" || $initial == "を" || $initial == "ん") {
-                $sql = $sql."where disp_st = 0 and del_st = 0 and $YorO like '$mojiset%' ";
+                $sql = $sql."where is_public = 1 and is_deleted = 0 and $YorO like '$mojiset%' ";
             }else if($initial == "か" || $initial == "き" || $initial == "く" || $initial == "け" || $initial == "こ" || 
                     $initial == "さ" || $initial == "し" || $initial == "す" || $initial == "せ" || $initial == "そ" || 
                     $initial == "た" || $initial == "ち" || $initial == "つ" || $initial == "て" || $initial == "と") {
-                $sql = $sql."where disp_st = 0 and del_st = 0 and $YorO like '$mojiset[0]%' 
-                        or disp_st = 0 and del_st = 0 and $YorO like '$mojiset[1]%' ";
+                $sql = $sql."where is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[0]%' 
+                        or is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[1]%' ";
             }else if($initial == "は" || $initial == "ひ" || $initial == "ふ" || $initial == "へ" || $initial == "ほ") {
-                $sql = $sql."where disp_st = 0 and del_st = 0 and $YorO like '$mojiset[0]%' 
-                        or disp_st = 0 and del_st = 0 and $YorO like '$mojiset[1]%' 
-                        or disp_st = 0 and del_st = 0 and $YorO like '$mojiset[2]%' ";
+                $sql = $sql."where is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[0]%' 
+                        or is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[1]%' 
+                        or is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[2]%' ";
             }else if($initial == "すべて"){
-                $sql = $sql."where disp_st = 0 and del_st = 0 ";
+                $sql = $sql."where is_public = 1 and is_deleted = 0 ";
             }
-            if($sort == "post_date") {
-                $sql = $sql."order by post_date desc";
+            if($sort == "posted_at") {
+                $sql = $sql."order by posted_at desc";
             }else if($YorO == "youjigo") {
                 $sql = $sql."order by youjigo asc";
             }else if($YorO == "kana") {
@@ -261,16 +261,16 @@ require_once ('midasi.php'); //←名前以外の検索キーワードを見出�
                 $id = hsc($row['id']);
                 $kodomo_name = hsc($row['kodomo_name']);
                 $age = hsc($row['age']);
-                $post_date = hsc($row['post_date']);
+                $posted_at = hsc($row['posted_at']);
                 $caption = hsc($row['caption']);
-                $image = hsc($row['image']);
-                $date = hsc($row['post_date']);
+                $photo = hsc($row['photo']);
+                $date = hsc($row['posted_at']);
                 $date_create = date_create($date);
                 $date2 = date_format($date_create,'Y年m月d日');
         
-                $src = "upImages/".$user_name."/".$image;
+                $src = "upImages/".$user_name."/".$photo;
 
-                if($row['image'] == ""){ //写真をアップロードしないユーザー用の画像。乱数で挿入される
+                if($row['photo'] == ""){ //写真をアップロードしないユーザー用の画像。乱数で挿入される
                     $num = mt_rand(1,6);
                     switch($num){
                         case 1:
@@ -336,7 +336,7 @@ require_once ('midasi.php'); //←名前以外の検索キーワードを見出�
                         <td class="caption" colspan="2"><span><?=$user_name?></span><?=$caption?><span id="date"><?=$date2?></span></td>
                     </tr> 
         <?php
-                }else if($YorO == "youjigo" && $sort == "post_date"){ //検索キーワードがようじ語・新着順だったら
+                }else if($YorO == "youjigo" && $sort == "posted_at"){ //検索キーワードがようじ語・新着順だったら
                     ?>
                     <tr >
                         <td class="info" id="<?=$youjigo?><?=$id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
@@ -358,7 +358,7 @@ require_once ('midasi.php'); //←名前以外の検索キーワードを見出�
                         <td class="caption" colspan="2"><span><?=$user_name?></span><?=$caption?><span id="date"><?=$date2?></span></td>
                     </tr> 
         <?php  
-                }else if($YorO == "kana" && $sort == "post_date") { //検索キーワードがおとな語・新着順だったら
+                }else if($YorO == "kana" && $sort == "posted_at") { //検索キーワードがおとな語・新着順だったら
         ?>        
                     <tr >
                         <td class="info" id="<?=$otonago?><?=$id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->

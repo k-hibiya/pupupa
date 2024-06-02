@@ -3,7 +3,12 @@
     require_once('connect.php');
     $user_name=$_SESSION['user_name'];
     $pdo=connect();
-    $sql = "select kodomo_name, kodomo_id from kodomo where user_name = '{$user_name}'";
+    $sql="select user_id from user where user_name = '$user_name'";
+    $stmt=$pdo->prepare($sql);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $user_id = hsc($row['user_id']);
+    $sql = "select kodomo_name, kodomo_id from kodomo where user_id = '$user_id'";
     $stmt=$pdo->prepare($sql);
     $row=$stmt->execute();
 
@@ -23,7 +28,7 @@
         }
         if(!$uerr){
             if (!empty($_FILES['image'])) {
-                $image = $_FILES['image']['name'];
+                $photo = $_FILES['image']['name'];
                 $src = 'upImages/' . $user_name . '/' . $image;
                 $result = move_uploaded_file($_FILES['image']['tmp_name'], $src);
             } 
@@ -34,9 +39,9 @@
             $caption=hsc($_POST['caption']);
             $age_id=hsc($_POST['age_id']);
             try{
-                $sql="insert into main values(null,?,?,?,?,?,?,?,?,now(),0,0)";
+                $sql="insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id) values(?,?,?,?,?,?,?,?)";
                 $stmt=$pdo->prepare($sql);
-                $row=$stmt->execute(array($user_name,$kodomo_id,$youjigo,$otonago,$kana,$image,$caption,$age_id));
+                $row=$stmt->execute(array($user_id,$kodomo_id,$youjigo,$otonago,$kana,$photo,$caption,$age_id));
                 $youjigoUpMessage='<p>”'.$youjigo.'”が登録されました。</p>
                     <a class="anchor" href="index.php">トップページへ</a>
                     <a class="anchor" href="mypage.php">マイページへ</a>';

@@ -20,13 +20,17 @@ if(isset($_POST['kodomoPlus'])){
     }
     if(!$uerr){
         try{
-            $sql="insert into kodomo values";
+            $sql="select user_id from user where user_name = '$user_name'";
+            $stmt=$pdo->prepare($sql);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $user_id = hsc($row['user_id']);
             for($i = 0; $i < count($_POST['kodomo_name']); $i++){
                 $kodomo_name = hsc($_POST['kodomo_name'][$i]);
                 $birthday = hsc($_POST['birthday'][$i]);
-                $sql="insert into kodomo values(null,?,?,?)";
+                $sql="insert into kodomo (user_id,kodomo_name,birthday) values(?,?,?)";
                 $stmt=$pdo->prepare($sql);
-                $isTouroku=$stmt->execute(array($user_name,$kodomo_name,$birthday));  
+                $isTouroku=$stmt->execute(array($user_id,$kodomo_name,$birthday));  
             }
             $kodomoPlusMessage='<p>正しく登録されました。</p>';
         }catch(PDOExeption $e){
@@ -70,24 +74,24 @@ if(isset($_POST['kodomoEdit'][$value])){
 }
 /************************** ↑　こどもアカウント編集用(kodomoEdit)　**************************/
 /************************** ↓　公開設定用(display)　**************************/
-    $sql = "select disp_st from main where user_name = '{$user_name}'";
+    $sql = "select is_public from user where user_name = '$user_name'";
     $stmt=$pdo->prepare($sql);
     $stmt->execute();
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    $disp_st = $row['disp_st'];
+    $is_public = $row['is_public'];
 
     $dispStMessage="";
 
     if(isset($_POST['display'])){
-        $disp_st=hsc($_POST['disp_st']);
+        $is_public=hsc($_POST['is_public']);
         try{
-            $sql="update main set disp_st = ? where user_name = ?";
+            $sql="update user set is_public = ? where user_name = ?";
             $stmt=$pdo->prepare($sql);
-            $row=$stmt->execute(array($disp_st,$user_name));
+            $row=$stmt->execute(array($is_public,$user_name));
 
-            if($disp_st == 0){
+            if($is_public == 1){
                 $dispStMessage='<p style="margin-block-end:1em;">公開に設定されました。</p>';
-            }else if($disp_st == 1){
+            }else if($is_public == 0){
                 $dispStMessage='<p style="margin-block-end:1em;">非公開に設定されました。</p>';
             }
         }catch(PDOExeption $e){
@@ -98,14 +102,14 @@ if(isset($_POST['kodomoEdit'][$value])){
 /************************** ↑　公開設定用(display)　**************************/
 /************************** ↓　アカウント削除用(acount_del)　**************************/
 if(isset($_POST['acount_del'])){
-        $valid_st=hsc($_POST['valid_st']);
+        $is_active=hsc($_POST['is_active']);
         try{
             $sql="update main set del_st = 1 where user_name = ?";
             $stmt=$pdo->prepare($sql);
             $row=$stmt->execute(array($user_name));
-            $sql="update user set valid_st = ? where user_name = ?";
+            $sql="update user set is_active = ? where user_name = ?";
             $stmt=$pdo->prepare($sql);
-            $row=$stmt->execute(array($valid_st,$user_name));
+            $row=$stmt->execute(array($is_active,$user_name));
             header("Location: acountDel.php");
         }catch(PDOExeption $e){
             $errorMessage="データベースエラー";
@@ -149,7 +153,7 @@ if(isset($_POST['acount_del'])){
 <?php
     if ($uerr){
 ?>
-    <form class="acountEdit" name="kodomo" action="<?= $_SERVER['SCRIPT_NAME'] ?>" method="post">
+    <form class="acountEdit" name="kodomoPlus" action="<?= $_SERVER['SCRIPT_NAME'] ?>" method="post">
         <fieldset>
             <legend>こどもアカウントを追加登録する</legend>
             <div id="message"><?=$errorMessage?></div>
@@ -209,17 +213,17 @@ if(isset($_POST['acount_del'])){
         <fieldset>
             <legend>公開状況を設定する</legend>
             <div>
-                <select id="disp_st" name="disp_st">
+                <select id="is_public" name="is_public">
                 <?php
-                    if($disp_st == 0){
+                    if($is_public == 1){
                 ?>
-                    <option value="0" selected>公開</option>
-                    <option value="1">非公開</option>
+                    <option value="1" selected>公開</option>
+                    <option value="0">非公開</option>
                 <?php
-                    }else if($disp_st == 1){
+                    }else if($is_public == 0){
                 ?>
-                    <option value="0">公開</option>
-                    <option value="1" selected>非公開</option>
+                    <option value="1">公開</option>
+                    <option value="0" selected>非公開</option>
                 <?php
                     }
                 ?>
@@ -239,10 +243,10 @@ if(isset($_POST['acount_del'])){
 <!---------------------------- ↓ アカウント削除用(acount_del) ---------------------------------->
 
     <form name="acount_del" action="<?=$_SERVER['SCRIPT_NAME']?>" method="post">
-    <fieldset>
-    <legend>アカウントを削除する</legend>
-        <input type="hidden" name="valid_st" value="1">
-        <button type="submit" name="acount_del" onclick="return confirm('アカウントを削除してもよろしいですか?')">アカウント削除</button>
+        <fieldset>
+        <legend>アカウントを削除する</legend>
+            <input type="hidden" name="is_active" value="0">
+            <button type="submit" name="acount_del" onclick="return confirm('アカウントを削除してもよろしいですか?')">アカウント削除</button>
         </fieldset>
     </form>
 <!---------------------------- ↑ アカウント削除用(acount_del) ---------------------------------->

@@ -31,7 +31,7 @@
             require_once('connect.php');
             $user_name=hsc($_POST['user_name']);
             $password = $_POST['password'];
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            $password_hash = password_hash($password, PASSWORD_DEFAULT);
             try{
                 $pdo=connect();
                 $sql="select count(*) as ninzu from user where user_name = (?)";
@@ -42,17 +42,22 @@
                     $errorMessage="すでにアカウント名が利用されています。<br>他のアカウント名で登録してください。";
                     $uerr=true;
                 }else{
-                    $sql="insert into user values(?,?,0)";
+                    $sql="insert into user (user_name,password_hash) values(?,?)";
                     $stmt=$pdo->prepare($sql);
-                    $isTouroku=$stmt->execute(array($user_name,$hashed_password));
+                    $isTouroku=$stmt->execute(array($user_name,$password_hash));
 
-                    $sql="insert into kodomo values";
+                    $sql="select user_id from user where user_name = '$user_name'";
+                    $stmt=$pdo->prepare($sql);
+                    $stmt->execute();
+                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $user_id = hsc($row['user_id']);
+
                     for($i = 0; $i < count($_POST['kodomo_name']); $i++){
                         $kodomo_name = hsc($_POST['kodomo_name'][$i]);
                         $birthday = hsc($_POST['birthday'][$i]);    
-                        $sql="insert into kodomo values(null,?,?,?)";
+                        $sql="insert into kodomo (user_id,kodomo_name,birthday) values(?,?,?)";
                         $stmt=$pdo->prepare($sql);
-                        $isTouroku=$stmt->execute(array($user_name,$kodomo_name,$birthday));  
+                        $isTouroku=$stmt->execute(array($user_id,$kodomo_name,$birthday));  
                     }
                     $signUpMessage='<p>正しく登録されました。</p>
                                         <a class="anchor" href="index.php">ホームへ</a>

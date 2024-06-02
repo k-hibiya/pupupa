@@ -11,16 +11,16 @@
             $user_name = hsc($_POST['user_name']);
             try{
                 $pdo=connect();
-                $sql="select user_name,password,valid_st from user where user_name=?";
+                $sql="select user_name,password_hash,is_active from user where user_name=?";
                 $stmt=$pdo->prepare($sql);
                 $stmt->execute(array($user_name));
                 $row=$stmt->fetch(PDO::FETCH_ASSOC);
                 $entered_password = $_POST['password'];
-                $stored_hashed_password = $row['password'];
-                if ($row && password_verify($entered_password, $stored_hashed_password)){
-                    if($row['valid_st'] == 1){
+                $password_hash = $row['password_hash'];
+                if ($row && password_verify($entered_password, $password_hash)){
+                    if($row['is_active'] == 0){
                         $errorMessage="ユーザー名あるいはパスワードが存在しません。";                
-                    }else if($row['valid_st'] == 0){
+                    }else if($row['is_active'] == 1){
                         session_regenerate_id(true);
                         $_SESSION['user_name'] = $row['user_name'];
                         header("Location: mypage.php");
