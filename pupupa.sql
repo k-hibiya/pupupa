@@ -73,7 +73,7 @@ create table admin_kanri(
 desc admin_kanri;
 
 
-insert into user (user_name, password_hash) values('hibiya','パスワード' );
+insert into user (user_name, password_hash) values('hibiya', 'パスワード');
 insert into user (user_name, password_hash) values('isono','$2y$10$ToFVT7d5QwPg69pTzRgA9.YoFUCrvBLNdPpvjlRmETEz5CUt/kwfe' );
 insert into user (user_name, password_hash) values('huguta','$2y$10$cCNM.qo/MxzYMUDREjNCY.c89u3IEH8H7HlW1yDIYSasbiBme2I0.' );
 
@@ -291,7 +291,7 @@ insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, ag
 insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(1,1,'ちょーてて','気をつけて','きをつけて','174.jpeg','',27,'2024/03/1','2024/03/1' );
 insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(1,1,'べんちょー','勉強','べんきょう','180.JPEG','お父さんがよくパソコンで勉強していたので、パソコンのことを「べんちょー」だと思っていた。よく「あんじもべんちょーしたい」と言って邪魔してきた。仕方ないから、写真を矢印キーで見させていた。嬉しそうに矢印キーを押すのがかわいかったが、邪魔だった。',28,'2024/03/2','2024/03/2' );
 insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(1,1,'もんたーとらっく','モンスタートラック','もんすたーとらっく','211.JPEG','このタイプの乗り物に乗りたがるが、乗ったらすごい怖がる。',28,'2024/03/3','2024/03/3' );
-insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(1,1,'さぼさん','サボテン','さぼてん','115.JPEG','サボさんは”みいつけた！”のキャラクター。お父さんが大事にしているサボテンのこともサボさんと言う。',28,'2024/03/4','2024/03/4' );
+insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(1,1,'さぼさん','サボテン','さぼてん','115.jpeg','サボさんは”みいつけた！”のキャラクター。お父さんが大事にしているサボテンのこともサボさんと言う。',28,'2024/03/4','2024/03/4' );
 insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(1,1,'でしゃ','電車','でんしゃ','210.JPEG','',28,'2024/03/5','2024/03/5' );
 insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(1,1,'べびか','ベビーカー','べびーかー','224.JPEG','',28,'2024/03/6','2024/03/6' );
 insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(1,1,'こえ','これ','これ','218.JPEG','',28,'2024/03/7','2024/03/7' );
