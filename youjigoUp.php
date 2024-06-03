@@ -29,7 +29,7 @@
         if(!$uerr){
             if (!empty($_FILES['image'])) {
                 $photo = $_FILES['image']['name'];
-                $src = 'upImages/' . $user_name . '/' . $image;
+                $src = 'upImages/' . $user_name . '/' . $photo;
                 $result = move_uploaded_file($_FILES['image']['tmp_name'], $src);
             } 
             $kodomo_id=hsc($_POST['kodomo_id']);
@@ -111,7 +111,7 @@
                 <input type="text" name="kana" pattern="^[ぁ-ゔー]+$" placeholder="とまと" required>
                 <div id="imageBox">
                     <label id="label" for="image">画像を選んでください</label>
-                    <input id="image" type="file" name="image" accept="image/*">
+                    <input id="image" type="file" name="image" accept=".jpeg, .jpg, .png, .gif, image/jpeg, image/png, image/gif">
                 </div>
                 <label for="caption">ようじ語や写真の紹介文</label>
                 <textarea type="text" name="caption" rows="5" placeholder="任意で入力してください。"></textarea>
