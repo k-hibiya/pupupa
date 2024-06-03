@@ -292,7 +292,7 @@ if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作�
                 }
             }
             if($sort == "posted_at") {
-                $sql = $sql."order by birthday desc, main.age_id desc";
+                $sql = $sql."order by birthday desc, main.age_id desc ,posted_at desc";
             }else if($YorO == "youjigo") {
                 $sql = $sql."order by youjigo asc";
             }else if($YorO == "kana") {
