@@ -258,7 +258,7 @@ require_once ('midasi.php'); //←名前以外の検索キーワードを見出�
                 $user_name = hsc($row['user_name']);
                 $youjigo = hsc($row['youjigo']);
                 $otonago = hsc($row['otonago']);
-                $id = hsc($row['id']);
+                $main_id = hsc($row['main_id']);
                 $kodomo_name = hsc($row['kodomo_name']);
                 $age = hsc($row['age']);
                 $posted_at = hsc($row['posted_at']);
@@ -296,7 +296,7 @@ require_once ('midasi.php'); //←名前以外の検索キーワードを見出�
                 if($YorO == "youjigo" && $sort == "asc") { //検索キーワードがようじ語・あいうえお順だったら
                     ?>       
                     <tr >
-                        <td class="info" id="<?=$youjigo?><?=$id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
+                        <td class="info" id="<?=$youjigo?><?=$main_id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
                             <img id="yajirusi" src="images/yajirusi.svg"><span><?=$user_name?></span>・<span><?=$kodomo_name?></span>・<span><?=$age?></span>
                         </td>
                     </tr> 
@@ -318,7 +318,7 @@ require_once ('midasi.php'); //←名前以外の検索キーワードを見出�
                 }else if($YorO == "kana" && $sort == "asc") { //検索キーワードがおとな語・あいうえお順だったら
         ?>        
                     <tr >
-                        <td class="info" id="<?=$otonago?><?=$id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
+                        <td class="info" id="<?=$otonago?><?=$main_id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
                             <img id="yajirusi" src="images/yajirusi.svg"><span><?=user_name?></span>・<span><?=$kodomo_name?></span>・<span><?=$age?></span>
                     </tr> 
                     <tr >
@@ -339,7 +339,7 @@ require_once ('midasi.php'); //←名前以外の検索キーワードを見出�
                 }else if($YorO == "youjigo" && $sort == "posted_at"){ //検索キーワードがようじ語・新着順だったら
                     ?>
                     <tr >
-                        <td class="info" id="<?=$youjigo?><?=$id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
+                        <td class="info" id="<?=$youjigo?><?=$main_id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
                             <img id="yajirusi" src="images/yajirusi.svg"><span><?=$user_name?></span>・<span><?=$kodomo_name?></span>・<span><?=$age?></span>
                         </td>
                     </tr> 
@@ -361,7 +361,7 @@ require_once ('midasi.php'); //←名前以外の検索キーワードを見出�
                 }else if($YorO == "kana" && $sort == "posted_at") { //検索キーワードがおとな語・新着順だったら
         ?>        
                     <tr >
-                        <td class="info" id="<?=$otonago?><?=$id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
+                        <td class="info" id="<?=$otonago?><?=$main_id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
                             <img id="yajirusi" src="images/yajirusi.svg"><span><?=$user_name?></span>・<span><?=$kodomo_name?></span>・<span><?=$age?></span>
                         </td>
                     </tr> 
