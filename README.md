@@ -106,6 +106,11 @@ PUPUPAは「こどもが何て言っているのかわからない！」そん�
 |midasi.php|←PHPのみ|検索方法を表示するための見出しを作成する。|
 |mojiset.php|←PHPのみ|頭文字検索で、濁点や半濁点があるかを判定し、それに応じた頭文字のセットを返す。|
 |imgsize.php|←PHPのみ|tableのセルの表示/非表示切り替え動作時、画像ファイルを遅延読み込み設定(loading="lazy")によるCLS発生を防止するため、ユーザーの画像保存用ディレクトリから各画像の高さを事前に取得してtdClose.jsに渡す。|
+|loginToAdomin.php|←PHPのみ|管理ページへのログイン機能。|
+|pupupa_admin_kanri.php|union.css<br>formtable.css|簡易的な管理機能。全ての投稿を検索・閲覧・削除できる機能。|
+|youjigoEditAdmin.php|union.css<br>youigoEdit.css|全ての投稿をデータベースから削除できる機能。|
+|youjigoDelAdmin.php|union.css<br>youjigoDel.css|投稿をデータベースから削除した後の確認画面。|
+
 
 #### JavaScript (Vanilla JavaScript)
 |ファイル名|詳細|
