@@ -38,7 +38,7 @@
             <li id="search"><p id="serchButton"><span class="img"><img src="images/serch.svg" alt="検索する"></span><span class="moji">検索する</span></li>
             <!-- <li id="youjigoUp"><a href="youjigoUp.php"><span class="img"><img src="images/post.svg" alt="投稿する"></span><span class="moji">投稿する</span></a></li> -->
             <!-- <li id="mypage"><a href="mypage.php" ><span class="img"><img id="nav" src="images/mypage.svg" alt="マイページ"></span><span class="moji">マイページ</span></a></li> -->
-            <li id="pupupa_admin_kanri"><a href="pupupa_admin_kanri.php" ><span class="img"><img id="management" src="images/management.svg" alt="管理ページ"></span><span class="moji">管理ページ</span></a></li>
+            <li id="pupupa_admin_kanri"><a href="pupupa_admin_kanri.php" ><span class="img"><img id="admin" src="images/admin.svg" alt="管理ページ"></span><span class="moji">管理ページ</span></a></li>
             <li id="logoutAdmin"><a href="logout.php" ><span class="img"><img id="nav" src="images/logout.svg" alt="管理ページログアウト"></span><span class="moji">管理ページ<br>ログアウト</span></a></li>
         </ul>
     </nav>

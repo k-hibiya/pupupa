@@ -21,7 +21,7 @@
     <nav>
         <ul>
             <li id="index"><a href="index.php"><span class="img"><img src="images/home.svg" alt="ホーム"></span><span class="moji">ホーム</span></a></li>
-            <li id="management"><a href="pupupa_admin_kanri.php" ><span class="img"><img id="management" src="images/management.svg" alt="管理ページ"></span><span class="moji">管理ページ</span></a></li>
+            <li id="pupupa_admin_kanri"><a href="pupupa_admin_kanri.php" ><span class="img"><img id="admin" src="images/admin.svg" alt="管理ページ"></span><span class="moji">管理ページ</span></a></li>
             <li id="logoutAdmin"><a href="logout.php" ><span class="img"><img id="nav" src="images/logout.svg" alt="管理ページログアウト"></span><span class="moji">管理ページ<br>ログアウト</span></a></li>
         </ul>
     </nav>
