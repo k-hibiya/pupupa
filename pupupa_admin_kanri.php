@@ -25,7 +25,6 @@
 <script src="js/nav.js"></script>
 <link rel="stylesheet" href="css/union.css" >
 <link rel="stylesheet" href="css/formtable.css" >
-<link rel="stylesheet" href="css/mypage.css" >
 </head>
 <body onCopy="return false">
 <header>
