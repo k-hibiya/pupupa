@@ -2,11 +2,13 @@ document.addEventListener("DOMContentLoaded", () => {
     let source = '';
     if (window.location.pathname.includes('index.php')) {
         source = 'index';
-    } else if (window.location.pathname.includes('mypage.php')) {
+    } else if (window.location.pathname.includes('pupupa_admin_kanri.php')) {
+        source = 'index';
+    }else if (window.location.pathname.includes('mypage.php')) {
         source = 'mypage';
     }
 
-    console.log(`Fetching imgsize.php?source=${source}`); // Debug log
+    // console.log(`Fetching imgsize.php?source=${source}`); // Debug log
 
     fetch(`imgsize.php?source=${source}`)
         .then(response => {
@@ -16,12 +18,13 @@ document.addEventListener("DOMContentLoaded", () => {
             return response.json();
         })
         .then(data => {
-            console.log('Received data:', data); // Debug log
+            // console.log('Received data:', data); // Debug log
 
             if (source === 'index') {
                 for (const user in data) {
                     const imagesData = data[user];
                     applyImageSizes(imagesData);
+                    handleFragmentScroll();
                 }
             } else if (source === 'mypage') {
                 applyImageSizes(data);
@@ -56,8 +59,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // クリックされたセルの背景色を変更
         cell.parentElement.nextElementSibling.nextElementSibling.firstElementChild.style.backgroundColor = "rgb(250,180,60)";
-    }    const YandO = document.querySelectorAll("td.YandO");
-
+    }    
+    
+    const YandO = document.querySelectorAll("td.YandO");
     const info = document.querySelectorAll("td.info");
     const img = document.querySelectorAll("td.img");
     const caption = document.querySelectorAll("td.caption");
