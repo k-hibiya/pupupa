@@ -72,8 +72,7 @@ create table admin_kanri(
 
 desc admin_kanri;
 
-
-insert into user (user_name, password_hash) values('hibiya', 'パスワード');
+insert into user (user_name, password_hash) values('hibiya','パスワード' );
 insert into user (user_name, password_hash) values('isono','$2y$10$ToFVT7d5QwPg69pTzRgA9.YoFUCrvBLNdPpvjlRmETEz5CUt/kwfe' );
 insert into user (user_name, password_hash) values('huguta','$2y$10$cCNM.qo/MxzYMUDREjNCY.c89u3IEH8H7HlW1yDIYSasbiBme2I0.' );
 
@@ -147,14 +146,14 @@ insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, ag
 insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(3,5,'ばぶ','バス','ばす','109.jpeg','写真は多摩動物公園のライオンバスを見ている二人。',12,'2023/10/7','2023/10/7' );
 insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(1,1,'はかか','魚','さかな','58.jpeg','水槽の魚を見て「はかかっ！」と言って興奮していた。',13,'2023/10/8','2023/10/8' );
 insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(2,2,'ちーち','ちーず','ちーず','176.jpeg','',13,'2023/10/9','2023/10/9' );
-insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(2,3,'じーてんしゃ','自転車','じてんしゃ','179.jpeg','',14,'2023/10/10','2023/10/10' );
+insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(2,3,'じーてんしゃ','自転車','じてんしゃ','179.JPEG','',14,'2023/10/10','2023/10/10' );
 insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(2,4,'はぽ','ハト','はと','18.jpeg','ハートのことは「はーぽ」と言っていた。',14,'2023/10/11','2023/10/11' );
 insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(3,5,'ぱ','パンダ','ぱんだ','149.jpeg','パンダもパンも「ぱ」だった。',15,'2023/10/12','2023/10/12' );
 insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(1,1,'ぱ','パン','ぱんだ','81.jpeg','パンもパンダも「ぱ」だった。',15,'2023/10/13','2023/10/13' );
 insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(2,2,'ば','バナナ','ばなな','1.jpeg','',16,'2023/10/14','2023/10/14' );
 insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(2,3,'ちゃーちゃ','お茶','おちゃ','3.jpeg','',16,'2023/10/15','2023/10/15' );
 insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(2,4,'ぱーぱー','パトカー','ぱとかー','45.jpeg','',17,'2023/10/16','2023/10/16' );
-insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(3,5,'へぱ','ヘリコプター','へりこぷたー','191.jpeg','',17,'2023/10/17','2023/10/17' );
+insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(3,5,'へぱ','ヘリコプター','へりこぷたー','191.JPEG','',17,'2023/10/17','2023/10/17' );
 insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(1,1,'えべたー','エレベーター','えれべーたー','7.jpeg','',18,'2023/10/18','2023/10/18' );
 insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(2,2,'がおー','ライオン','らいおん','6.jpeg','',18,'2023/10/19','2023/10/19' );
 insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id, posted_at, updated_at) values(2,3,'ぱおー','ゾウ','ぞう','34.jpeg','',19,'2023/10/20','2023/10/20' );
