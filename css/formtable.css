@@ -1,4 +1,4 @@
-p#mado {
+p#mado, p#account_mado{
     display:flex;
     position:fixed;
     inset-inline-start:calc((100vw - (var(--logX) * 600)) / 2);
@@ -37,24 +37,30 @@ p#mado {
         border:calc(var(--logX) * 2.5) solid rgb(255,0,0);
         border-radius:calc(var(--logX) * 10);
     }
-    fieldset:nth-of-type(2){
+    fieldset#kodomo_name {
+        border-color:rgb(250,180,60);
+    }
+    fieldset#YorO {
+        border-color:rgb(255,0,0);
+    }
+    fieldset#initial {
         border-color:rgb(120,200,70);
     }
-    fieldset:nth-of-type(3){
+    fieldset#sort {
         border-color:rgb(60,170,250);
         padding-inline:auto;
     }
     /* fieldset:nth-of-type(4){
         border-color:rgb(60,170,250);
     } */
-    fieldset:nth-of-type(2) > div {
+    fieldset#initial > div {
         display:flex;
         width:calc(var(--logX) * 280);
         justify-content:space-between;
         margin-inline:auto;
         margin-block-end:1em;
     }
-    fieldset:nth-of-type(2) > div:first-of-type {
+    fieldset#initial > div:first-of-type {
         justify-content:center;
     }
     fieldset label {
@@ -69,13 +75,16 @@ p#mado {
         accent-color:rgb(120,200,70);
         cursor:pointer;
     }
-    fieldset:not(:nth-of-type(2)) input {
+    fieldset:not(#initial) input {
         margin-block-end:1em;
     }
-    fieldset:nth-of-type(2) input {
+    fieldset#kodomo_name input {
+        accent-color:rgb(60,170,250);
+    }
+    fieldset#initial input {
         accent-color:rgb(250,180,60);
     }
-    fieldset:nth-of-type(3) input {
+    fieldset#sort input {
         accent-color:rgb(255,0,0);
     }
     /* fieldset:nth-of-type(4) input {
@@ -119,12 +128,41 @@ p#mado {
         justify-content:center;
         align-items:center;
         font-size:1em;
+        font-weight:normal;
         width:calc(var(--logX) * 300);
         text-align:center;
         background-color:rgb(255, 255, 255);
         height:calc(var(--logX) * 40);
         color:rgb(60,60,60);
         z-index:1;
+    }
+    th#account_th {
+        width:calc(var(--logX) * 600);
+    }
+    td a {
+        text-decoration:none;
+        color:rgb(60,60,60);
+    }
+    td.account_td {
+        display:flex;
+        width:calc(var(--logX) * 600);
+        justify-content:space-between;
+        align-items:center;
+    }
+    td.account_td > span:first-of-type {
+        margin-inline-start:6em;
+    }
+    td.account_td > span:first-of-type > a {
+        display:flex;
+        justify-content:normal;
+        align-items:center;
+        height:calc(var(--logX) * 30);
+    }
+    td.account_td > span:first-of-type > a:is(:hover, :focus){
+        background-color:rgb(220, 220, 30);
+    }
+    td.account_td > span.follow {
+        margin-inline-end:6em;
     }
     th:nth-of-type(1) {
         position:fixed;
@@ -221,6 +259,22 @@ p#mado {
     td.caption > span:last-child {
         color:rgb(120,120,120);
     }
+    td.info > span#edit {
+        display:block;
+        float:right;
+        /* margin-inline-end:1em; */
+    }
+    td.info > span#edit > a {
+        border:calc(var(--logX) * 2) solid rgb(220, 220, 30);
+        padding-block:0.1em;
+        padding-inline:0.2em;
+        border-radius:0.3em;
+        text-decoration:none;
+        color:rgb(60,60,60);
+    }
+    td.info > span#edit > a:is(:hover, :focus) {
+        background-color:rgb(220, 220, 30);
+    }
     /******************************** /table *******************************/
 /******************************** レスポンシブ　600以下 *******************************/
 @media screen and (max-width:600px) {
@@ -232,7 +286,10 @@ p#mado {
     }
     p#mado {
         width:100%;
-    }    
+    } 
+    th#account_th {
+        width:100%;
+    }   
 }
 /******************************** /レスポンシブ　600以下 *******************************/
 /******************************** レスポンシブ　440以下 *******************************/
@@ -288,7 +345,16 @@ p#mado {
     td:not(td.img) {
         padding-inline:0.5em;
     }    
-    /*--------------- table --------------*/
+    td.account_td {
+        width:100%;
+    }
+    td.account_td > span:first-of-type {
+        margin-inline-start:0;
+    }
+    td.account_td > span.follow {
+        margin-inline-end:0;
+    }
+/*--------------- table --------------*/
 /*--------------- main --------------*/
 }
 /******************************** /レスポンシブ　440以下 *******************************/

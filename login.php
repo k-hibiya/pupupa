@@ -22,8 +22,8 @@
                         $errorMessage="ユーザー名あるいはパスワードが存在しません。";                
                     }else if($row['is_active'] == 1){
                         session_regenerate_id(true);
-                        $_SESSION['user_name'] = $row['user_name'];
-                        header("Location: mypage.php");
+                        $_SESSION['user_name'] = hsc($row['user_name']);
+                        header("Location: index.php");
                         exit();
                     }
                 }else{

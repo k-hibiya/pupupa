@@ -8,6 +8,8 @@ function midasi($data1, $data2, $data3) {
 
     if($data2 == "すべて") {
         $midasi = $midasi."すべて<span>・";
+    }else if($data2 == "フォロー中") {
+        $midasi = $midasi."フォロー中<span>・";
     }else if($data2 == "あ") {
         $midasi = $midasi."<span>あ</span><span>・";
     }else if($data2 == "い") {
@@ -102,7 +104,9 @@ function midasi($data1, $data2, $data3) {
         $midasi = $midasi."<span>ん</span><span>・";
     }
 
-    if($data3 == "posted_at") {
+    if($data3 == "user_id") {
+        $midasi = $midasi."<span>新着順</span>";
+    }else if($data3 == "posted_at") {
         $midasi = $midasi."<span>新着順</span>";
     }else if($data3 == "asc") {
         $midasi = $midasi."<span>あいうえお順</span>";

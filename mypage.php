@@ -174,14 +174,12 @@
 <?php
 /*------------------------------------------- ↓ 検索結果表示用スクリプト -------------------------------------------*/
 if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作成用の変数定義
-        // $photo = "1";
         $YorO = "youjigo";
         $initial = "すべて";
         $sort = "posted_at";
         $kodomo_id = "みんな";
         $kodomo_name = "みんな";
     }else if(isset($_GET['YorO'])) { //formが送られてきた場合のSQL作成用の変数定義
-        // $photo = hsc($_GET['photo']);
         $YorO = hsc($_GET['YorO']);
         $initial = hsc($_GET['initial']);
         $sort = hsc($_GET['sort']);

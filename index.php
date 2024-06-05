@@ -4,7 +4,7 @@
 <meta charaset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <!-- <meta name="description" content="PUPUPAは「こどもが何て言っているのかわからない！」そんな幼児語の“困った”を解決する投稿型の幼児語辞典アプリです。" /> -->
-<title>PUPUPA</title>
+<title>PUPUPAトップページ</title>
 <script src="js/form.js"></script>
 <script src="js/nav.js"></script>
 <script src="js/tdClose.js"></script>
@@ -21,7 +21,8 @@
             <li id="index"><a href="index.php"><span class="img"><img src="images/home.svg" alt="ホーム"></span><span class="moji">ホーム</span></a></li>
             <li id="back"><p id="goBack"><span class="img"><img src="images/goback.svg" alt="戻る"></span><span class="moji">戻る</span></li>
             <li id="serch"><p id="serchButton"><span class="img"><img src="images/serch.svg" alt="検索する"></span><span class="moji">検索する</span></li>
-            <li id="youjigoUp"><a href="youjigoUp.php"><span class="img"><img src="images/post.svg" alt="投稿する"></span><span class="moji">投稿する</span></a></li>
+            <li id="account_search"><a href="account_search.php"><span class="img"><img src="images/account_search.svg" alt="アカウントリスト"></span><span class="moji">アカウント<br>リスト</span></a></li>
+            <!-- <li id="youjigoUp"><a href="youjigoUp.php"><span class="img"><img src="images/post.svg" alt="投稿する"></span><span class="moji">投稿する</span></a></li> -->
 <?php
     session_start();
     if(!isset($_SESSION['user_name'])) {
@@ -38,14 +39,63 @@
     </nav>
 </header>
 <main>
+<?php
+    require_once('connect.php'); //←データベース接続情報を持ったPDOインスタンスを返す connect() が入っている。
+    // session_start();
+    $user_name=$_SESSION['user_name'];
+    $pdo=connect();
+?>
+
 <!------------------------------------------- ↓ 検索form ------------------------------------------->
+
     <form id="formBox" action="<?= $_SERVER['SCRIPT_NAME'] ?>" method="get">
-        <fieldset>
+    <?php
+        $selected_name="";
+        if($_GET['selected_name']){
+            $selected_name = $_GET['selected_name'];
+    ?>
+        <fieldset id="kodomo_name">
+        <?php
+            //↓検索フォームで、こどもの数が一人だったらlegend無し。複数いたら、"だれか選んでください"のlegendあり
+            // $sql = "select count(kodomo_id) from kodomo join user on main.user_id = user.user_id where user.user_name = '$user_name'";
+            $sql = "select count(kodomo_id) from kodomo join user on kodomo.user_id = user.user_id where user.user_name = '$selected_name'";
+            $stmt=$pdo->prepare($sql);
+            $count=$stmt->execute();
+            $count = $stmt->fetch(PDO::FETCH_ASSOC);
+            if($count['count(kodomo_id)'] >= 2){
+        ?>
+            <legend>だれか選んでください</legend>
+        <?php
+            } 
+            //↓子供の名前のラジオボタンを人数分作る
+            $sql = "select kodomo_id,kodomo_name from kodomo join user on kodomo.user_id = user.user_id where user_name = '$selected_name'";
+            $stmt=$pdo->prepare($sql);
+            $row=$stmt->execute();
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+                $kodomo_id = hsc($row['kodomo_id']);
+                $kodomo_name = hsc($row['kodomo_name']);
+        ?>
+            <label><input name="kodomo_id" type="radio" value="<?=$kodomo_id?>" checked="checked"><?=$kodomo_name?></label>
+        <?php
+            }
+            //↓こどもの人数が二人以上だったら、全員分を指定できるラジオボタン "みんな" を作る
+            if($count['count(kodomo_id)'] >= 2){
+        ?>
+            <label><input name="kodomo_id" type="radio" value="みんな" checked="checked">みんな</label>
+        <?php
+            }
+        ?>
+
+        </fieldset>
+    <?php
+        }
+    ?>
+        <fieldset id="YorO">
             <legend>検索方法を選んでください</legend>
                 <label><input name="YorO" type="radio" value="youjigo" checked="checked">ようじ語</label>
                 <label><input name="YorO" type="radio" value="kana">逆引き</label>
         </fieldset>
-        <fieldset>
+        <fieldset id="initial">
             <legend>どれかひとつ選んでください</legend>
             <div>
                 <label><input name="initial" type="radio" value="すべて" checked="checked">すべて</label>
@@ -117,11 +167,12 @@
                 <label><input name="initial" type="radio" value="ん">ん</label>
             </div>
         </fieldset>
-        <fieldset>
+        <fieldset id="sort">
             <legend>どちらか選んでください</legend>
             <div>
                 <label><input name="sort" type="radio" value="asc" checked="checked">あいうえお順</label>
                 <label><input name="sort" type="radio" value="posted_at">新着順</label>
+                <input name="selected_name" type="hidden" value="<?=$selected_name?>">
             </div>       
         </fieldset>
         <button type="submit" value="検索">検索</button>
@@ -130,7 +181,7 @@
 
 <?php
 /*------------------------------------------- ↓ 検索結果表示用スクリプト -------------------------------------------*/
-    require_once('connect.php'); //←loginしていないユーザーをlogin画面(login.php)にリダイレクトする
+    //require_once('connect.php'); //←loginしていないユーザーをlogin画面(login.php)にリダイレクトする
         /* ↓ toLogin.phpの中身
 
             session_start();
@@ -140,21 +191,64 @@
             }
 
         */
-    if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作成用の変数定義
-        $YorO = "youjigo";
-        $initial = "すべて";
-        $sort = "posted_at";
-    }else if(isset($_GET['YorO'])) { //formが送られてきた場合のSQL作成用の変数定義
-        $YorO = hsc($_GET['YorO']);
-        $initial = hsc($_GET['initial']);
-        $sort = hsc($_GET['sort']);
-    }
-/*------- ↓ 検索キーワードをまとめた見出しを作成する -------*/
-require_once ('midasi.php'); //←名前以外の検索キーワードを見出しとしてまとめて返す midasi() が入っている
-    $midasi = midasi($YorO, $initial, $sort); //例、"ようじ語・すべて・あいうえお順"
-    $searchMessage = $midasi;
-/*--- ↑ 検索キーワードをまとめた見出しを作成する --*/
+    require_once ('midasi.php'); //←名前以外の検索キーワードを見出しとしてまとめて返す midasi() が入っている
 
+    if(!$_GET['selected_name']){
+
+        if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作成用の変数定義
+            $YorO = "youjigo";
+            $initial = "すべて";
+            $sort = "posted_at";
+        }else if(isset($_GET['YorO'])) { //formが送られてきた場合のSQL作成用の変数定義
+            $YorO = hsc($_GET['YorO']);
+            $initial = hsc($_GET['initial']);
+            $sort = hsc($_GET['sort']);
+        }
+        /*------- ↓ 検索キーワードをまとめた見出しを作成する -------*/
+        $midasi = midasi($YorO, $initial, $sort); //例、"ようじ語・すべて・あいうえお順"
+        $searchMessage = $midasi;
+
+    } else if($_GET{'selected_name'}){
+
+        if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作成用の変数定義
+            $YorO = "youjigo";
+            $initial = "すべて";
+            $sort = "posted_at";
+            $kodomo_id = "みんな";
+            $kodomo_name = "みんな";
+        }else if(isset($_GET['YorO'])) { //formが送られてきた場合のSQL作成用の変数定義
+            $YorO = hsc($_GET['YorO']);
+            $initial = hsc($_GET['initial']);
+            $sort = hsc($_GET['sort']);
+            $kodomo_id = hsc($_GET['kodomo_id']);
+            $youjigo = hsc($_GET['youjigo']);
+            // ↓ formで送られてきたkodomo_idでこどもの名前を取得する。
+            $sql = "select kodomo_name from kodomo where kodomo_id = '{$kodomo_id}'";
+            $stmt=$pdo->prepare($sql);
+            $name=$stmt->execute();
+            $name = $stmt->fetch(PDO::FETCH_ASSOC);
+            $kodomo_name = hsc($name['kodomo_name']);
+        }
+    
+        /*------- ↓ 検索キーワードをまとめた見出しを作成する -------*/
+        $midasi = midasi($YorO, $initial, $sort); //例、"ようじ語・すべて・あいうえお順"
+    
+        if($kodomo_id == "みんな") {
+            $kodomo_name = "みんな";
+        }
+        if($count['count(kodomo_id)'] >= 2){ //こどもの人数が二人以上だったら見出しの始まりが ”みんな・” となる
+            $searchMessage = $kodomo_name."・";
+        }else if($count['count(kodomo_id)'] == 1){ //こどもが一人だったら見出しの始まりが ”こどもの名前・” となる
+            $sql = "select kodomo_name from kodomo join user on kodomo.user_id = user.user_id where user_name = '{$selected_name}'";
+            $stmt=$pdo->prepare($sql);
+            $row=$stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $kodomo_name = hsc($row['kodomo_name']);
+            $searchMessage = $kodomo_name."・";
+        }
+        $searchMessage = $searchMessage.$midasi; //例、”みんな・ようじ語・すべて・あいうえお順”   
+
+    }
 ?>
     <p id="mado"><?=$searchMessage?></p> <!-- ← 検索キーワードをまとめた見出しがここに入る。-->
 <!---------------------- ↓ ここからテーブル ---------------------->
@@ -178,7 +272,23 @@ require_once ('midasi.php'); //←名前以外の検索キーワードを見出�
     try {
 /*------- ↓ SQL文を作成する -------*/
         require_once('mojiset.php');
-        $pdo = connect();
+
+        $where = "";
+        $order_by = "";
+
+        if(!$_GET['selected_name']){
+            $order_by = "order by posted_at desc";
+            $where = "";
+        } else if($_GET['selected_name']){
+            if($kodomo_id == "みんな"){
+                $where = "and user_name = '$selected_name' ";
+                $order_by = "order by birthday desc, main.age_id desc, posted_at desc";
+            }else if($kodomo != "みんな"){
+                $where = "and main.kodomo_id = $kodomo_id and user_name = '$selected_name' ";
+                $order_by = "order by posted_at desc";
+            }
+        }
+
         if(isset($YorO)){
             $sql = "select main_id, user_name, kodomo_name, youjigo, otonago, kana, photo, 
                     caption, age, posted_at, is_public, is_deleted from main 
@@ -194,21 +304,21 @@ require_once ('midasi.php'); //←名前以外の検索キーワードを見出�
                     $initial == "や" || $initial == "ゆ" || $initial == "よ" || 
                     $initial == "ら" || $initial == "り" || $initial == "る" || $initial == "れ" || $initial == "ろ" || 
                     $initial == "わ" || $initial == "を" || $initial == "ん") {
-                $sql = $sql."where is_public = 1 and is_deleted = 0 and $YorO like '$mojiset%' ";
+                $sql = $sql."where is_public = 1 and is_deleted = 0 and $YorO like '$mojiset%' $where";
             }else if($initial == "か" || $initial == "き" || $initial == "く" || $initial == "け" || $initial == "こ" || 
                     $initial == "さ" || $initial == "し" || $initial == "す" || $initial == "せ" || $initial == "そ" || 
                     $initial == "た" || $initial == "ち" || $initial == "つ" || $initial == "て" || $initial == "と") {
-                $sql = $sql."where is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[0]%' 
-                        or is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[1]%' ";
+                $sql = $sql."where is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[0]%' $where
+                        or is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[1]%' $where";
             }else if($initial == "は" || $initial == "ひ" || $initial == "ふ" || $initial == "へ" || $initial == "ほ") {
-                $sql = $sql."where is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[0]%' 
-                        or is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[1]%' 
-                        or is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[2]%' ";
+                $sql = $sql."where is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[0]%' $where
+                        or is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[1]%' $where
+                        or is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[2]%' $where";
             }else if($initial == "すべて"){
-                $sql = $sql."where is_public = 1 and is_deleted = 0 ";
+                $sql = $sql."where is_public = 1 and is_deleted = 0 $where";
             }
             if($sort == "posted_at") {
-                $sql = $sql."order by posted_at desc";
+                $sql = $sql.$order_by;
             }else if($YorO == "youjigo") {
                 $sql = $sql."order by youjigo asc";
             }else if($YorO == "kana") {

@@ -11,7 +11,7 @@
     font-family:"Yu Gothic", "游ゴシック", "游ゴシック体", "Noto Sans JP", "Noto Sans CJK JP", "Arial", "Helvetica", "Hiragino Sans","ヒラギノ角ゴシック", sans-serif;
     --baseW:100vw;
     --logX:(var(--baseW) / 1280);
-    font-size:max(14px, var(--logX) * 16);
+    font-size:calc(var(--logX) * 16);
     color:rgb(60,60,60);
     background-color:rgb(255, 255, 255);
 }
