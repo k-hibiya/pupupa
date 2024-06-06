@@ -92,7 +92,60 @@ function mojiset($data1) {
         $mojiset = "を";
     }else if($data1 == "ん") {
         $mojiset = "ん";
+    }else if($data1 == "A") {
+        $mojiset = array("A","a");
+    }else if($data1 == "B") {
+        $mojiset = array("B","b");
+    }else if($data1 == "C") {
+        $mojiset = array("C","c");
+    }else if($data1 == "D") {
+        $mojiset = array("D","d");
+    }else if($data1 == "E") {
+        $mojiset = array("E","e");
+    }else if($data1 == "F") {
+        $mojiset = array("F","f");
+    }else if($data1 == "G") {
+        $mojiset = array("G","g");
+    }else if($data1 == "H") {
+        $mojiset = array("H","h");
+    }else if($data1 == "I") {
+        $mojiset = array("I","i");
+    }else if($data1 == "J") {
+        $mojiset = array("J","j");
+    }else if($data1 == "K") {
+        $mojiset = array("K","k");
+    }else if($data1 == "L") {
+        $mojiset = array("L","l");
+    }else if($data1 == "M") {
+        $mojiset = array("M","m");
+    }else if($data1 == "N") {
+        $mojiset = array("N","N");
+    }else if($data1 == "O") {
+        $mojiset = array("O","o");
+    }else if($data1 == "P") {
+        $mojiset = array("P","p");
+    }else if($data1 == "Q") {
+        $mojiset = array("Q","q");
+    }else if($data1 == "R") {
+        $mojiset = array("R","r");
+    }else if($data1 == "S") {
+        $mojiset = array("S","s");
+    }else if($data1 == "T") {
+        $mojiset = array("T","t");
+    }else if($data1 == "U") {
+        $mojiset = array("U","u");
+    }else if($data1 == "V") {
+        $mojiset = array("V","v");
+    }else if($data1 == "W") {
+        $mojiset = array("W","w");
+    }else if($data1 == "X") {
+        $mojiset = array("X","x");
+    }else if($data1 == "Y") {
+        $mojiset = array("Y","y");
+    }else if($data1 == "Z") {
+        $mojiset = array("Z","z");
     }
+    
     return $mojiset;
 }
 ?>

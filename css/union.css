@@ -79,6 +79,7 @@ li > p {
     position:relative;
     width:calc(var(--logX) * 60);
     height:calc(var(--logX) * 60);
+    font-size:1em;
     cursor:pointer;
 }
 nav span.img {
@@ -197,7 +198,7 @@ main {
 @media screen and (max-width:400px) {
     :root {
         --baseW:100vw;
-        --logX:calc(var(--baseW) / 440)
+        --logX:calc(var(--baseW) / 400)
     }
 }
 /******************************** レスポンシブ　400以下 *******************************/

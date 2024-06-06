@@ -48,8 +48,8 @@
             }catch(PDOExeption $e){
                 $errorMessage="データベースエラー";
                 echo $e->getMessage();
-            $uerr=true;
-        }
+                $uerr=true;
+            }
         }
     }else{
         $uerr=true;

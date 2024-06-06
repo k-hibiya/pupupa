@@ -4,10 +4,20 @@ function midasi($data1, $data2, $data3) {
         $midasi = "<span>ようじ語</span><span>・";
     }else if($data1 == "kana") {
         $midasi = "<span>おとな語</span><span>・";
+    }else if($data1 == "all_accounts") {
+        $midasi = "<span>すべてのアカウント</span><span>・";
+    }else if($data1 == "following") {
+        $midasi = "<span>フォロー中のアカウント</span><span>・";
     }
 
     if($data2 == "すべて") {
         $midasi = $midasi."すべて<span>・";
+    }else if($data2 == "all_alphabets") {
+        if($midasi == "<span>すべてのアカウント</span><span>・"){
+            $midasi = $midasi;
+        }else if($midasi != "<span>すべてのアカウント</span><span>・"){
+            $midasi = $midasi."<span>すべて</span><span>・";
+        }
     }else if($data2 == "フォロー中") {
         $midasi = $midasi."フォロー中<span>・";
     }else if($data2 == "あ") {
@@ -102,14 +112,68 @@ function midasi($data1, $data2, $data3) {
         $midasi = $midasi."<span>を</span><span>・";
     }else if($data2 == "ん") {
         $midasi = $midasi."<span>ん</span><span>・";
+    }else if($data2 == "A") {
+        $midasi = $midasi."<span>A</span><span>・";
+    }else if($data2 == "B") {
+        $midasi = $midasi."<span>B</span><span>・";
+    }else if($data2 == "C") {
+        $midasi = $midasi."<span>C</span><span>・";
+    }else if($data2 == "D") {
+        $midasi = $midasi."<span>D</span><span>・";
+    }else if($data2 == "E") {
+        $midasi = $midasi."<span>E</span><span>・";
+    }else if($data2 == "F") {
+        $midasi = $midasi."<span>F</span><span>・";
+    }else if($data2 == "G") {
+        $midasi = $midasi."<span>G</span><span>・";
+    }else if($data2 == "H") {
+        $midasi = $midasi."<span>H</span><span>・";
+    }else if($data2 == "I") {
+        $midasi = $midasi."<span>I</span><span>・";
+    }else if($data2 == "J") {
+        $midasi = $midasi."<span>J</span><span>・";
+    }else if($data2 == "K") {
+        $midasi = $midasi."<span>K</span><span>・";
+    }else if($data2 == "L") {
+        $midasi = $midasi."<span>L</span><span>・";
+    }else if($data2 == "M") {
+        $midasi = $midasi."<span>M</span><span>・";
+    }else if($data2 == "N") {
+        $midasi = $midasi."<span>N</span><span>・";
+    }else if($data2 == "O") {
+        $midasi = $midasi."<span>O</span><span>・";
+    }else if($data2 == "P") {
+        $midasi = $midasi."<span>P</span><span>・";
+    }else if($data2 == "Q") {
+        $midasi = $midasi."<span>Q</span><span>・";
+    }else if($data2 == "R") {
+        $midasi = $midasi."<span>R</span><span>・";
+    }else if($data2 == "S") {
+        $midasi = $midasi."<span>S</span><span>・";
+    }else if($data2 == "T") {
+        $midasi = $midasi."<span>T</span><span>・";
+    }else if($data2 == "U") {
+        $midasi = $midasi."<span>U</span><span>・";
+    }else if($data2 == "V") {
+        $midasi = $midasi."<span>V</span><span>・";
+    }else if($data2 == "W") {
+        $midasi = $midasi."<span>W</span><span>・";
+    }else if($data2 == "X") {
+        $midasi = $midasi."<span>X</span><span>・";
+    }else if($data2 == "Y") {
+        $midasi = $midasi."<span>Y</span><span>・";
+    }else if($data2 == "Z") {
+        $midasi = $midasi."<span>Z</span><span>・";
     }
 
-    if($data3 == "user_id") {
-        $midasi = $midasi."<span>新着順</span>";
+    if($data3 == "user_id_desc") {
+        $midasi = $midasi."<span>新しい順</span>";
     }else if($data3 == "posted_at") {
         $midasi = $midasi."<span>新着順</span>";
     }else if($data3 == "asc") {
         $midasi = $midasi."<span>あいうえお順</span>";
+    }else if($data3 == "alphabet_asc") {
+        $midasi = $midasi."<span>ABC順</span>";
     }
     return $midasi;
 

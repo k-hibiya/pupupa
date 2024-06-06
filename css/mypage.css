@@ -89,24 +89,6 @@ form#formBox button:is(:hover, :focus) {
     outline:calc(var(--logX) * 1.5) solid rgb(250,180,60)
 }
 /******************************** /form *******************************/
-/******************************** table *******************************/
-td.info > span#edit {
-    display:block;
-    float:right;
-    /* margin-inline-end:1em; */
-}
-td.info > span#edit > a {
-    border:calc(var(--logX) * 2) solid rgb(220, 220, 30);
-    padding-block:0.1em;
-    padding-inline:0.2em;
-    border-radius:0.3em;
-    text-decoration:none;
-    color:rgb(60,60,60);
-}
-td.info > span#edit > a:is(:hover, :focus) {
-    background-color:rgb(220, 220, 30);
-}
-/******************************** /table *******************************/
 /******************************** レスポンシブ　600以下 *******************************/
 @media screen and (max-width:600px) {
     fieldset {
@@ -127,3 +109,11 @@ td.info > span#edit > a:is(:hover, :focus) {
     }
 }
 /******************************** /レスポンシブ　440以下 *******************************/
+/******************************** レスポンシブ　400以下 *******************************/
+@media screen and (max-width:400px) {
+    :root {
+        --baseW:100vw;
+        --logX:calc(var(--baseW) / 400)
+    }
+}
+/******************************** レスポンシブ　400以下 *******************************/

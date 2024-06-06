@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="stylesheet" href="css/union.css" >
 <link rel="stylesheet" href="css/acountDel.css" >
-<title>アカウント管理</title>
+<title>アカウント管理ページ</title>
 </head>
 <body>
 <header>

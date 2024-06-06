@@ -25,8 +25,7 @@
 </header>
 <main>
     <?php
-        $id = hsc($_GET['id']);
-        $photo=hsc($_GET['photo']);
+        $main_id = hsc($_GET['main_id']);
         $YorO=hsc($_GET['YorO']);
         $initial=hsc($_GET['initial']);
         $kodomo_id=hsc($_GET['kodomo_id']);
