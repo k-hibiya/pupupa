@@ -131,7 +131,7 @@
     <table>
         <colgroup span="2"></colgroup>
             <tr >
-                <th class="fixed" id="account_th" colspan="2"><span id="k">アカウントを選んでください</span></th>
+                <th class="fixed" id="account_th" colspan="2"><span>アカウントを選んでください</span></th>
             </tr> 
 <?php
 
@@ -192,30 +192,28 @@
     <?php
             }
                     
-        }else if(count($row) >= 2) {
+        }else if($row) {
             if($AorF == "all_accounts" ){
     ?>
                 <tr >
-                    <td class="account_td" colspan="2"> 
-                        <span><a href="index.php">すべてのアカウント</a></span>
+                    <td class="account_td" id="all_AorF" colspan="2"> 
+                        <div>
+                            <span><a href="index.php">すべてのアカウント</a></span>
+                        </div>
                     </td>
                 </tr> 
     <?php
-            }/*else if($AorF == "following"){
-                $sql2 = "select count(followee_id) from follow where follower_id = $user_id";
-                $stmt=$pdo->prepare($sql2);
-                $count=$stmt->execute();
-                $count = $stmt->fetch(PDO::FETCH_ASSOC);
-                if($count['count(followee_id)'] >= 2){
+            }else if($AorF == "following" && $initial == "all_alphabets"){
             ?>
                 <tr >
-                    <td class="account_td" colspan="2"> 
-                        <span><a href="index.php?AorF=following">すべてのフォロー中のアカウント</a></span>
+                    <td class="account_td" id="all_AorF" colspan="2"> 
+                        <div>
+                            <span><a href="index.php?AorF=following">すべてのフォロー中のアカウント</a></span>
+                        </div>
                     </td>
                 </tr> 
             <?php
-                }
-            }*/
+            }
         }
 /*------- ↑ 各アカウントが未登録時の表示 -------*/
 
@@ -229,9 +227,10 @@
             ?>       
                     <tr >
                         <td class="account_td" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
-                            <span><a href="index.php?selected_name=<?=$selected_name?>"><?=$selected_name?></a></span>
-                            <!-- ↓ 編集ボタン(a要素)には、幼児語編集画面へ遷移後のSQL作成用URLパラメータを持たせている -->       
-                            <span class="follow"><!--<a href="follow.php?selected_name=<?=$selected_name?>">-->フォロー(準備中)<!--</a>--></span>
+                            <div>
+                                <span><a href="index.php?selected_name=<?=$selected_name?>"><?=$selected_name?></a></span>
+                                <span class="follow"><a href="follow.php?selected_name=<?=$selected_name?>">フォロー</a></span>
+                            </div>
                         </td>
                     </tr> 
             <?php
@@ -239,9 +238,10 @@
             ?>        
                     <tr >
                         <td class="account_td" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
-                            <span><?=$selected_name?>（非公開）</span>
-                            <!-- ↓ 編集ボタン(a要素)には、幼児語編集画面へ遷移後のSQL作成用URLパラメータを持たせている -->       
-                            <span class="follow"><!--<a href="follow.php?selected_name=<?=$selected_name?>">-->フォロー(準備中)<!--</a>--></span>
+                            <div>
+                                <span><?=$selected_name?>（非公開）</span>
+                                <span class="follow"><a href="follow.php?selected_name=<?=$selected_name?>">フォロー</a></span>
+                            </div>
                         </td>
                     </tr> 
 <!---------------------- ↑ ここまでテーブル ---------------------->

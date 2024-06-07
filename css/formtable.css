@@ -139,6 +139,9 @@ p#mado, p#account_mado{
     th#account_th {
         width:calc(var(--logX) * 600);
     }
+    th#account_th > span {
+        border-block-end:calc(var(--logX) * 3) solid rgb(250,180,60);
+    }
     td a {
         text-decoration:none;
         color:rgb(60,60,60);
@@ -149,18 +152,51 @@ p#mado, p#account_mado{
         justify-content:space-between;
         align-items:center;
     }
-    td.account_td > span:first-of-type {
-        margin-inline-start:7em;
+    td.account_td > div {
+        display:flex;
+        width:100%;
+        height:100%;
+        justify-content:space-between;
+        align-items:center;
+        margin-inline:6em;
+        background-color:rgb(220,220,220);
     }
-    td.account_td > span:first-of-type > a {
+    td.account_td > div > span:first-of-type {
+        height:100%;
+        width:calc(100% - 6em);
+        background-color:rgb(255,255,255);
+    }
+    td#all_AorF > div > span {
+        width:100%;
+    }
+    td.account_td > div > span.follow {
+        height:100%;
+        width:6em;
+        background-color:rgb(255,255,255);
+    }
+    td.account_td > div > span > a {
         display:flex;
         justify-content:normal;
         align-items:center;
-        height:calc(var(--logX) * 30);
-        width:13em;
+        height:100%;
+        width:100%;
+        padding-inline:1em;
     }
-    td.account_td > span:first-of-type > a:is(:hover, :focus){
+    td.account_td > div > span.follow > a {
+        justify-content:end;
+        width:auto;
+    }
+    td.account_td > div > span:first-of-type > a:is(:hover, :focus){
+        background-color:rgb(60,170,250);
+        color:rgb(255,255,255);
+        border-radius:0.5em 0 0 0.5em;
+    }
+    td.account_td > div > span.follow > a:is(:hover, :focus){
         background-color:rgb(220, 220, 30);
+        border-radius:0 0.5em 0.5em 0;
+    }
+    td#all_AorF > div > span > a:is(:hover, :focus){
+        border-radius:0.5em;
     }
     td.account_td > span.follow {
         margin-inline-end:7em;
@@ -336,14 +372,8 @@ p#mado {
     td.account_td {
         width:100%;
     }
-    td.account_td > span:first-of-type {
-        margin-inline-start:3em;
-    }
-    td.account_td > span.follow {
-        margin-inline-end:3em;
-    }
-    td.account_td > span:first-of-type > a {
-        width:10em;
+    td.account_td > div {
+        margin-inline:2em;
     }
 /*--------------- table --------------*/
 /*--------------- main --------------*/
