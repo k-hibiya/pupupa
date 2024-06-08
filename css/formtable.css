@@ -163,7 +163,7 @@ p#mado, p#account_mado{
     }
     td.account_td > div > span:first-of-type {
         height:100%;
-        width:calc(100% - 6em);
+        width:calc(100% - 7em);
         background-color:rgb(255,255,255);
     }
     td#all_AorF > div > span {
@@ -171,10 +171,10 @@ p#mado, p#account_mado{
     }
     td.account_td > div > span.follow {
         height:100%;
-        width:6em;
+        width:7em;
         background-color:rgb(255,255,255);
     }
-    td.account_td > div > span > a {
+    td.account_td > div > span > :is(a, p) {
         display:flex;
         justify-content:normal;
         align-items:center;
@@ -197,9 +197,6 @@ p#mado, p#account_mado{
     }
     td#all_AorF > div > span > a:is(:hover, :focus){
         border-radius:0.5em;
-    }
-    td.account_td > span.follow {
-        margin-inline-end:7em;
     }
     th:nth-of-type(1) {
         position:fixed;

@@ -25,6 +25,7 @@
 <script src="js/form.js"></script>
 <script src="js/nav.js"></script>
 <script src="js/tdClose.js"></script>
+<script src="js/followLink.js"></script>
 <link rel="stylesheet" href="css/union.css" >
 <link rel="stylesheet" href="css/formtable.css" >
 </head>
@@ -152,10 +153,10 @@
                 $sql = $sql."where is_active = 1 and user_name like '$mojiset[0]%' 
                                 or is_active = 1 and user_name like '$mojiset[1]%' ";
             }else if($AorF == "following" && $initial == "all_alphabets"){
-                $sql = $sql."join follow on user.user_id = follow.followee_id 
+                $sql = "select user_name, is_public, is_active, follow_status from user join follow on user.user_id = follow.followee_id 
                             where is_active = 1 and follower_id = $user_id ";
             }else if($AorF == "following" && $initial != "all_alphabets"){
-                $sql = $sql."join follow on user.user_id = follow.followee_id 
+                $sql = "select user_name, is_public, is_active, follow_status from user join follow on user.user_id = follow.followee_id 
                             where is_active = 1 and user_name like '$mojiset[0]%' and follower_id = $user_id 
                             or is_active = 1 and user_name like '$mojiset[1]%' and follower_id = $user_id ";
             }
@@ -208,7 +209,7 @@
                 <tr >
                     <td class="account_td" id="all_AorF" colspan="2"> 
                         <div>
-                            <span><a href="index.php?AorF=following">すべてのフォロー中のアカウント</a></span>
+                            <span><a href="index.php?AorF=all_followings">すべてのフォロー中のアカウント</a></span>
                         </div>
                     </td>
                 </tr> 
@@ -221,34 +222,35 @@
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) { // ← DBから取得した分だけ結果を表示する。
-                $selected_name = hsc($row['user_name']);
+                $selected_name = $row['user_name'];
                 $is_public = hsc($row['is_public']);
-                if($is_public == 1) { //検索キーワードがようじ語・あいうえお順だったら
+                if($user_name != $selected_name){
+                    if($is_public == 1) { 
             ?>       
                     <tr >
                         <td class="account_td" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
                             <div>
                                 <span><a href="index.php?selected_name=<?=$selected_name?>"><?=$selected_name?></a></span>
-                                <span class="follow"><a href="follow.php?selected_name=<?=$selected_name?>">フォロー</a></span>
+                                <span class="follow"><a href="follow_message.php?selected_name=<?=$selected_name?>" class="follow_link" data-selected-name="<?=$selected_name?>">フォロー</a></span>
                             </div>
                         </td>
                     </tr> 
             <?php
-                }else if($is_public == 0) { //検索キーワードがおとな語・あいうえお順だったら
+                    }else if($is_public == 0) { //検索キーワードがおとな語・あいうえお順だったら
             ?>        
                     <tr >
                         <td class="account_td" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
                             <div>
-                                <span><?=$selected_name?>（非公開）</span>
-                                <span class="follow"><a href="follow.php?selected_name=<?=$selected_name?>">フォロー</a></span>
+                                <span><p><?=$selected_name?>（非公開）</p></span>
+                                <span class="follow"><a href="follow_message.php?selected_name=<?=$selected_name?>" class="follow_link">フォロー</a></span>
                             </div>
                         </td>
                     </tr> 
 <!---------------------- ↑ ここまでテーブル ---------------------->
 <?php
+                    }
                 }
     
-            // }
 
         }
 }catch(PDOException $e){
