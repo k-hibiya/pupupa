@@ -146,19 +146,21 @@
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $user_id = $row['user_id'];
         if(isset($AorF)){
-            $sql = "select user_name, is_public, is_active from user ";
+            $sql = "select user_name, is_public, is_active, follow_status from user ";
             if($AorF == "all_accounts" && $initial == "all_alphabets"){
-                $sql = $sql."where is_active = 1 ";
+                $sql = $sql."left join follow on user.user_id = follow.followee_id and follower_id = $user_id 
+                        where is_active = 1 ";
             }else if($AorF == "all_accounts" && $initial != "all_alphabets"){
-                $sql = $sql."where is_active = 1 and user_name like '$mojiset[0]%' 
-                                or is_active = 1 and user_name like '$mojiset[1]%' ";
+                $sql = $sql."left join follow on user.user_id = follow.followee_id and follower_id = $user_id 
+                        where is_active = 1 and user_name like '$mojiset[0]%' 
+                        or is_active = 1 and user_name like '$mojiset[1]%' ";
             }else if($AorF == "following" && $initial == "all_alphabets"){
-                $sql = "select user_name, is_public, is_active, follow_status from user join follow on user.user_id = follow.followee_id 
-                            where is_active = 1 and follower_id = $user_id ";
+                $sql = $sql."join follow on user.user_id = follow.followee_id 
+                        where is_active = 1 and follower_id = $user_id ";
             }else if($AorF == "following" && $initial != "all_alphabets"){
-                $sql = "select user_name, is_public, is_active, follow_status from user join follow on user.user_id = follow.followee_id 
-                            where is_active = 1 and user_name like '$mojiset[0]%' and follower_id = $user_id 
-                            or is_active = 1 and user_name like '$mojiset[1]%' and follower_id = $user_id ";
+                $sql = $sql."join follow on user.user_id = follow.followee_id 
+                        where is_active = 1 and user_name like '$mojiset[0]%' and follower_id = $user_id 
+                        or is_active = 1 and user_name like '$mojiset[1]%' and follower_id = $user_id ";
             }
             if($sort == "user_id_desc") {
                 $sql = $sql."order by user_id desc";
@@ -224,30 +226,58 @@
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) { // ← DBから取得した分だけ結果を表示する。
                 $selected_name = $row['user_name'];
                 $is_public = hsc($row['is_public']);
+                $follow_status = hsc($row['follow_status']);
                 if($user_name != $selected_name){
                     if($is_public == 1) { 
+                        if($follow_status == 0){
             ?>       
                     <tr >
-                        <td class="account_td" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
+                        <td class="account_td" colspan="2"> 
                             <div>
                                 <span><a href="index.php?selected_name=<?=$selected_name?>"><?=$selected_name?></a></span>
-                                <span class="follow"><a href="follow_message.php?selected_name=<?=$selected_name?>" class="follow_link" data-selected-name="<?=$selected_name?>">フォロー</a></span>
+                                <span class="follow_button"><p class="follow" data-selected-name="<?=$selected_name?>">フォロー</p></span>
                             </div>
                         </td>
                     </tr> 
             <?php
-                    }else if($is_public == 0) { //検索キーワードがおとな語・あいうえお順だったら
+                        }else if($follow_status == 1){
+            ?>       
+                    <tr >
+                        <td class="account_td" colspan="2">
+                            <div>
+                                <span><a href="index.php?selected_name=<?=$selected_name?>"><?=$selected_name?></a></span>
+                                <span class="follow_button"><p class="unfollow" data-selected-name="<?=$selected_name?>">フォロー中</p></span>
+                            </div>
+                        </td>
+                    </tr> 
+            <?php
+                        }
+                    }else if($is_public == 0) {
+                        if($follow_status == 0){
             ?>        
                     <tr >
-                        <td class="account_td" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
+                        <td class="account_td" colspan="2">
                             <div>
                                 <span><p><?=$selected_name?>（非公開）</p></span>
-                                <span class="follow"><a href="follow_message.php?selected_name=<?=$selected_name?>" class="follow_link">フォロー</a></span>
+                                <span class="follow_button"><p class="follow_request" data-selected-name="<?=$selected_name?>">フォロー</p></span>
                             </div>
                         </td>
                     </tr> 
 <!---------------------- ↑ ここまでテーブル ---------------------->
 <?php
+                        }if($follow_status == 1){
+                            ?>        
+                    <tr >
+                        <td class="account_td" colspan="2">
+                            <div>
+                                <span><a href="index.php?selected_name=<?=$selected_name?>"><?=$selected_name?></a></span>
+                                <span class="follow_button"><p class="unfollow" data-selected-name="<?=$selected_name?>">フォロー中</a></span>
+                            </div>
+                        </td>
+                    </tr> 
+<!---------------------- ↑ ここまでテーブル ---------------------->
+<?php
+                        }
                     }
                 }
     

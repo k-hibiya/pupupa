@@ -159,20 +159,17 @@ p#mado, p#account_mado{
         justify-content:space-between;
         align-items:center;
         margin-inline:6em;
-        background-color:rgb(220,220,220);
     }
     td.account_td > div > span:first-of-type {
         height:100%;
         width:calc(100% - 7em);
-        background-color:rgb(255,255,255);
     }
     td#all_AorF > div > span {
         width:100%;
     }
-    td.account_td > div > span.follow {
+    td.account_td > div > span.follow_button {
         height:100%;
         width:7em;
-        background-color:rgb(255,255,255);
     }
     td.account_td > div > span > :is(a, p) {
         display:flex;
@@ -181,8 +178,9 @@ p#mado, p#account_mado{
         height:100%;
         width:100%;
         padding-inline:1em;
+        cursor:pointer;
     }
-    td.account_td > div > span.follow > a {
+    td.account_td > div > span.follow_button > :is(a, p) {
         justify-content:end;
         width:auto;
     }
@@ -191,7 +189,7 @@ p#mado, p#account_mado{
         color:rgb(255,255,255);
         border-radius:0.5em 0 0 0.5em;
     }
-    td.account_td > div > span.follow > a:is(:hover, :focus){
+    td.account_td > div > span.follow_button > :is(a, p):is(:hover, :focus){
         background-color:rgb(220, 220, 30);
         border-radius:0 0.5em 0.5em 0;
     }
