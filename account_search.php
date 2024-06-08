@@ -25,7 +25,7 @@
 <script src="js/form.js"></script>
 <script src="js/nav.js"></script>
 <script src="js/tdClose.js"></script>
-<script src="js/followLink.js"></script>
+<script src="js/follow.js"></script>
 <link rel="stylesheet" href="css/union.css" >
 <link rel="stylesheet" href="css/formtable.css" >
 </head>
