@@ -89,6 +89,12 @@
         </fieldset>
     <?php
         }
+
+        if(isset($_GET['AorF'])){
+    ?>
+        <input type="hidden" name="AorF" value="all_followings">
+    <?php
+        }
     ?>
         <fieldset id="YorO">
             <legend>検索方法を選んでください</legend>
@@ -196,10 +202,16 @@
     if(!$_GET['selected_name']){
 
         if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作成用の変数定義
-            $YorO = "youjigo";
+            if(isset($_GET['AorF'])){
+                $AorF = hsc($_GET['AorF']);
+            }
+        $YorO = "youjigo";
             $initial = "すべて";
             $sort = "posted_at";
         }else if(isset($_GET['YorO'])) { //formが送られてきた場合のSQL作成用の変数定義
+            if(isset($_GET['AorF'])){
+                $AorF = hsc($_GET['AorF']);
+            }
             $YorO = hsc($_GET['YorO']);
             $initial = hsc($_GET['initial']);
             $sort = hsc($_GET['sort']);
@@ -271,59 +283,78 @@
 
     try {
 /*------- ↓ SQL文を作成する -------*/
-        require_once('mojiset.php');
+$sql = "select user_id from user where user_name = '$user_name'";
+$stmt=$pdo->prepare($sql);
+$row=$stmt->execute();
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$user_id = $row['user_id'];
+
+require_once('mojiset.php');
 
         $where = "";
         $order_by = "";
 
-        if(!$_GET['selected_name']){
-            $order_by = "order by posted_at desc";
-            $where = "";
-        } else if($_GET['selected_name']){
-            if($kodomo_id == "みんな"){
-                $where = "and user_name = '$selected_name' ";
-                $order_by = "order by birthday desc, main.age_id desc, posted_at desc";
-            }else if($kodomo != "みんな"){
-                $where = "and main.kodomo_id = $kodomo_id and user_name = '$selected_name' ";
-                $order_by = "order by posted_at desc";
-            }
-        }
-
-        if(isset($YorO)){
+        if(isset($AorF)){
+            $sql = "select main_id, user_name, kodomo_name, youjigo, otonago, kana, photo, 
+                    caption, age, posted_at, is_public, is_deleted from main 
+                    join user on main.user_id = user.user_id 
+                    join follow on user.user_id = follow.followee_id 
+                    join kodomo on main.kodomo_id = kodomo.kodomo_id 
+                    join age on main.age_id = age.age_id ";
+        }else if(isset($YorO)){
             $sql = "select main_id, user_name, kodomo_name, youjigo, otonago, kana, photo, 
                     caption, age, posted_at, is_public, is_deleted from main 
                     join user on main.user_id = user.user_id 
                     join kodomo on main.kodomo_id = kodomo.kodomo_id 
                     join age on main.age_id = age.age_id ";
-            if(isset($initial)){
-                $mojiset = mojiset($initial);
+        }
+
+        if($_GET['AorF']){
+            $where = "is_deleted = 0 and  follower_id = $user_id ";
+            $order_by = "order by posted_at desc";
+        }else if(!$_GET['selected_name']){
+            $where = "is_public = 1 and is_deleted = 0 ";
+            $order_by = "order by posted_at desc";
+        }else if($_GET['selected_name']){
+            if($kodomo_id == "みんな"){
+                $where = "user_name = '$selected_name' ";
+                $order_by = "order by birthday desc, main.age_id desc, posted_at desc";
+            }else if($kodomo != "みんな"){
+                $where = "main.kodomo_id = $kodomo_id and user_name = '$selected_name' ";
+                $order_by = "order by posted_at desc";
             }
-            if($initial == "あ" || $initial == "い" || $initial == "う" || $initial == "え" || $initial == "お" || 
-                    $initial == "な" || $initial == "に" || $initial == "ぬ" || $initial == "ね" || $initial == "の" || 
-                    $initial == "ま" || $initial == "み" || $initial == "む" || $initial == "め" || $initial == "も" || 
-                    $initial == "や" || $initial == "ゆ" || $initial == "よ" || 
-                    $initial == "ら" || $initial == "り" || $initial == "る" || $initial == "れ" || $initial == "ろ" || 
-                    $initial == "わ" || $initial == "を" || $initial == "ん") {
-                $sql = $sql."where is_public = 1 and is_deleted = 0 and $YorO like '$mojiset%' $where";
-            }else if($initial == "か" || $initial == "き" || $initial == "く" || $initial == "け" || $initial == "こ" || 
-                    $initial == "さ" || $initial == "し" || $initial == "す" || $initial == "せ" || $initial == "そ" || 
-                    $initial == "た" || $initial == "ち" || $initial == "つ" || $initial == "て" || $initial == "と") {
-                $sql = $sql."where is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[0]%' $where
-                        or is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[1]%' $where";
-            }else if($initial == "は" || $initial == "ひ" || $initial == "ふ" || $initial == "へ" || $initial == "ほ") {
-                $sql = $sql."where is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[0]%' $where
-                        or is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[1]%' $where
-                        or is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[2]%' $where";
-            }else if($initial == "すべて"){
-                $sql = $sql."where is_public = 1 and is_deleted = 0 $where";
-            }
-            if($sort == "posted_at") {
-                $sql = $sql.$order_by;
-            }else if($YorO == "youjigo") {
-                $sql = $sql."order by youjigo asc";
-            }else if($YorO == "kana") {
-                $sql = $sql."order by kana asc";
-            }
+        }
+
+        if(isset($initial)){
+            $mojiset = mojiset($initial);
+        }
+
+        if($initial == "あ" || $initial == "い" || $initial == "う" || $initial == "え" || $initial == "お" || 
+                $initial == "な" || $initial == "に" || $initial == "ぬ" || $initial == "ね" || $initial == "の" || 
+                $initial == "ま" || $initial == "み" || $initial == "む" || $initial == "め" || $initial == "も" || 
+                $initial == "や" || $initial == "ゆ" || $initial == "よ" || 
+                $initial == "ら" || $initial == "り" || $initial == "る" || $initial == "れ" || $initial == "ろ" || 
+                $initial == "わ" || $initial == "を" || $initial == "ん") {
+            $sql = $sql."where is_public = 1 and is_deleted = 0 and $YorO like '$mojiset%' and $where";
+        }else if($initial == "か" || $initial == "き" || $initial == "く" || $initial == "け" || $initial == "こ" || 
+                $initial == "さ" || $initial == "し" || $initial == "す" || $initial == "せ" || $initial == "そ" || 
+                $initial == "た" || $initial == "ち" || $initial == "つ" || $initial == "て" || $initial == "と") {
+            $sql = $sql."where is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[0]%' and $where
+                    or is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[1]%' and $where";
+        }else if($initial == "は" || $initial == "ひ" || $initial == "ふ" || $initial == "へ" || $initial == "ほ") {
+            $sql = $sql."where is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[0]%' and $where
+                    or is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[1]%' and $where
+                    or is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[2]%' and $where";
+        }else if($initial == "すべて"){
+            $sql = $sql."where $where";
+        }
+
+        if($sort == "posted_at") {
+            $sql = $sql.$order_by;
+        }else if($YorO == "youjigo") {
+            $sql = $sql."order by youjigo asc";
+        }else if($YorO == "kana") {
+            $sql = $sql."order by kana asc";
         }
 /*------- ↑ SQL文を作成する -------*/
     
@@ -429,7 +460,7 @@
         ?>        
                     <tr >
                         <td class="info" id="<?=$otonago?><?=$main_id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
-                            <img id="yajirusi" src="images/yajirusi.svg"><span><?=user_name?></span>・<span><?=$kodomo_name?></span>・<span><?=$age?></span>
+                            <img id="yajirusi" src="images/yajirusi.svg"><span><?=$user_name?></span>・<span><?=$kodomo_name?></span>・<span><?=$age?></span>
                     </tr> 
                     <tr >
                         <td class="img" colspan="2">
