@@ -271,7 +271,7 @@
                         <td class="account_td" colspan="2">
                             <div>
                                 <span><a href="index.php?selected_name=<?=$selected_name?>"><?=$selected_name?></a></span>
-                                <span class="follow_button"><p class="unfollow" data-selected-name="<?=$selected_name?>">フォロー中</a></span>
+                                <span class="follow_button"><p class="unfollow" data-selected-name="<?=$selected_name?>">フォロー中</p></span>
                             </div>
                         </td>
                     </tr> 

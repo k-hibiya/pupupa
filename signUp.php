@@ -115,7 +115,7 @@
         ?>
                 <div>
                     <p><span class="required">＊</span>マークは入力必須項目です。</p>
-                    <label for="user_name">アカウント名<span class="required">＊</span></label><input type="text" name="user_name" pattern="^(?![_\.])(?!.*[_\.]$)[A-Za-z0-9._]+$" minlength="6" maxlength="20" placeholder="英数字と記号( . _ )を含む6文字以上20文字以内" title="英数字と記号( . _ )を含む6文字以上20文字以内で入力してください。記号は最初と最後の文字には使えません。" required autofocus ></br>
+                    <label for="user_name">アカウント名<span class="required">＊</span></label><input type="text" name="user_name" pattern="^(?![_\.])(?!.*[_\.]$)[A-Za-z0-9._]+$" minlength="5" maxlength="20" placeholder="英数字と記号( . _ )を含む5文字以上20文字以内" title="英数字と記号( . _ )を含む6文字以上20文字以内で入力してください。記号は最初と最後の文字には使えません。" required autofocus ></br>
                     <label for="password">パスワード<span class="required">＊</span></label><input type="password" name="password" pattern="^[A-Za-z\d!$%@]+$" minlength="8" placeholder="英数字と記号( ! $ @ % )を含む8文字以上" title="英数字と記号( ! $ @ % )を含む8文字以上で入力してください。" required><br>
                     <label for="password2">パスワード(確認用)<span class="required">＊</span></label><input type="password" name="password2" pattern="^[A-Za-z\d!$%@]+$" minlength="8" title="英数字と記号( ! $ @ % )を含む8文字以上で入力してください。" required><br>
                     <div id="error">
