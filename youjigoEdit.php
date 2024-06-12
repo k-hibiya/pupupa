@@ -38,17 +38,23 @@ if(isset($_POST['youjigoEdit'])){
             $caption=hsc($_POST['caption']);
             $tango=hsc($_POST['tango']);
             try{
-                $sql="update main set youjigo=?, otonago=?, kana=?, caption=? where main_id = ?";
+                $sql="update main set youjigo = :youjigo, otonago = :otonago, kana = :kana, caption = :caption where main_id = :main_id";
                 $stmt=$pdo->prepare($sql);
-                $row=$stmt->execute(array($youjigo,$otonago,$kana,$caption,$main_id));
+                $stmt->bindParam(':youjigo', $youjigo, PDO::PARAM_STR);
+                $stmt->bindParam(':otonago', $otonago, PDO::PARAM_STR);
+                $stmt->bindParam(':kana', $kana, PDO::PARAM_STR);
+                $stmt->bindParam(':caption', $caption, PDO::PARAM_STR);
+                $stmt->bindParam(':main_id', $main_id, PDO::PARAM_INT);
+                $row=$stmt->execute();
 
                 if($YorO == 'youjigo'){
-                    $sql="select youjigo as kotoba from main where main_id = ?";
+                    $sql="select youjigo as kotoba from main where main_id = :main_id";
                 }else if($YorO == 'kana'){
-                    $sql="select otonago as kotoba from main where main_id = ?";
+                    $sql="select otonago as kotoba from main where main_id = :main_id";
                 }
                 $stmt=$pdo->prepare($sql);
-                $row=$stmt->execute(array($main_id));
+                $stmt->bindParam(':main_id', $main_id, PDO::PARAM_INT);
+                $row=$stmt->execute();
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 $kotoba = hsc($row['kotoba']);
                 $flag = $kotoba.$main_id;
@@ -73,16 +79,19 @@ if(isset($_POST['youjigoEdit'])){
         $kodomo_id=hsc($_POST['kodomo_id']);
         $sort=hsc($_POST['sort']);
 
-        $sql="select youjigo from main where main_id = $main_id";
+        $sql="select youjigo from main where main_id = :main_id";
         $stmt=$pdo->prepare($sql);
+        $stmt->bindParam(':main_id', $main_id, PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $youjigo = hsc($row['youjigo']);
 
         try{
-            $sql="update main set is_deleted = ? where main_id = ?";
+            $sql="update main set is_deleted = :is_deleted where main_id = :main_id";
             $stmt=$pdo->prepare($sql);
-            $row=$stmt->execute(array($is_deleted,$main_id));
+            $stmt->bindParam(':is_deleted', $is_deleted, PDO::PARAM_INT);
+            $stmt->bindParam(':main_id', $main_id, PDO::PARAM_INT);
+            $row=$stmt->execute();
             header("Location: youjigoDel.php?YorO=$YorO&initial=$initial&kodomo_id=$kodomo_id&sort=$sort&youjigo=$youjigo");
         }catch(PDOExeption $e){
             $errorMessage="データベースエラー";

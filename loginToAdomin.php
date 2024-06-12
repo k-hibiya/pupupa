@@ -11,9 +11,10 @@
             $admin_name = hsc($_POST['admin_name']);
             try{
                 $pdo=connect();
-                $sql="select admin_name,admin_password_hash from admin_kanri where admin_name=?";
+                $sql="select admin_name,admin_password_hash from admin_kanri where admin_name = :admin_name";
                 $stmt=$pdo->prepare($sql);
-                $stmt->execute(array($admin_name));
+                $stmt->bindParam(':admin_name', $admin_name, PDO::PARAM_STR);
+                $stmt->execute();
                 $row=$stmt->fetch(PDO::FETCH_ASSOC);
                 $entered_password = $_POST['password'];
                 $stored_hashed_password = $row['admin_password_hash'];

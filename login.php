@@ -11,9 +11,10 @@
             $user_name = hsc($_POST['user_name']);
             try{
                 $pdo=connect();
-                $sql="select user_name,password_hash,is_active from user where user_name=?";
+                $sql="select user_name,password_hash,is_active from user where user_name = :user_name";
                 $stmt=$pdo->prepare($sql);
-                $stmt->execute(array($user_name));
+                $stmt->bindParam(':user_name', $user_name, PDO::PARAM_STR);
+                $stmt->execute();
                 $row=$stmt->fetch(PDO::FETCH_ASSOC);
                 $entered_password = $_POST['password'];
                 $password_hash = $row['password_hash'];

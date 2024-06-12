@@ -6,9 +6,10 @@
     $admin_name = $_SESSION['admin_name'];
     require_once('connect.php'); //←データベース接続情報を持ったPDOインスタンスを返す connect() が入っている。
     $pdo=connect();
-    $sql="select is_superadmin from admin_kanri where admin_name = ?";
+    $sql="select is_superadmin from admin_kanri where admin_name = :admin_name";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(array($admin_name));
+    $stmt->bindParam(':admin_name', $admin_name, PDO::PARAM_STR);
+    $stmt->execute();
     $row = $stmt->fetch(PDO::FETCH_ASSOC);// ← DBから取得した分だけ結果を表示する。
     $is_superadmin = $row['is_superadmin'];
 ?>
@@ -46,12 +47,12 @@
 <main>
 <!------------------------------------------- ↓ 検索form ------------------------------------------->
 <form id="formBox" action="<?= $_SERVER['SCRIPT_NAME'] ?>" method="get">
-        <fieldset>
+        <fieldset id="YorO">
             <legend>検索方法を選んでください</legend>
                 <label><input name="YorO" type="radio" value="youjigo" checked="checked">ようじ語</label>
                 <label><input name="YorO" type="radio" value="kana">逆引き</label>
         </fieldset>
-        <fieldset>
+        <fieldset id="initial">
             <legend>どれかひとつ選んでください</legend>
             <div>
                 <label><input name="initial" type="radio" value="すべて" checked="checked">すべて</label>
@@ -123,7 +124,7 @@
                 <label><input name="initial" type="radio" value="ん">ん</label>
             </div>
         </fieldset>
-        <fieldset>
+        <fieldset id="sort">
             <legend>どちらか選んでください</legend>
             <div>
                 <label><input name="sort" type="radio" value="asc" checked="checked">あいうえお順</label>
@@ -185,6 +186,13 @@ require_once ('midasi.php'); //←名前以外の検索キーワードを見出�
 /*------- ↓ SQL文を作成する -------*/
         require_once('mojiset.php');
         $pdo = connect();
+
+        // 安全性のために $YorO の値を検証する
+        $allowed_columns = ['youjigo', 'kana'];
+        if (!in_array($YorO, $allowed_columns)) {
+            die("Invalid column name specified.");
+        }
+        
         if(isset($YorO)){
             $sql = "select main_id, user_name, kodomo_name, youjigo, otonago, kana, photo, 
                     caption, age, posted_at, is_public, is_deleted from main 

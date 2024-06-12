@@ -20,17 +20,22 @@ if(isset($_POST['kodomoPlus'])){
     }
     if(!$uerr){
         try{
-            $sql="select user_id from user where user_name = '$user_name'";
+            $sql="SELECT user_id FROM user WHERE user_name = :user_name";
             $stmt=$pdo->prepare($sql);
+            $stmt->bindParam(':user_name', $user_name, PDO::PARAM_STR);
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $user_id = hsc($row['user_id']);
+
             for($i = 0; $i < count($_POST['kodomo_name']); $i++){
                 $kodomo_name = hsc($_POST['kodomo_name'][$i]);
                 $birthday = hsc($_POST['birthday'][$i]);
-                $sql="insert into kodomo (user_id,kodomo_name,birthday) values(?,?,?)";
+                $sql="INSERT INTO kodomo (user_id,kodomo_name,birthday) VALUES(:user_id,:kodomo_name,:birthday)";
                 $stmt=$pdo->prepare($sql);
-                $isTouroku=$stmt->execute(array($user_id,$kodomo_name,$birthday));  
+                $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+                $stmt->bindParam(':kodomo_name', $kodomo_name, PDO::PARAM_STR);
+                $stmt->bindParam(':birthday', $birthday, PDO::PARAM_STR);
+                $isTouroku=$stmt->execute();  
             }
             $kodomoPlusMessage='<p>正しく登録されました。</p>';
         }catch(PDOExeption $e){
@@ -58,7 +63,7 @@ if(isset($_POST['kodomoEdit'][$value])){
     }
     if(!$uerr2){
         try{
-                $sql="update kodomo set kodomo_name = ?, birthday = ? where user_name = ?";
+                $sql="UPDATE kodomo set kodomo_name = ?, birthday = ? WHERE user_name = ?";
                 $stmt=$pdo->prepare($sql);
                 $isTouroku2=$stmt->execute(array(hsc($_POST['kodomo_name']),hsc($_POST['birthday']),$user_name));  
             $kodomoEditMessage='<p>正しく登録されました</p>';
@@ -74,8 +79,9 @@ if(isset($_POST['kodomoEdit'][$value])){
 }
 /************************** ↑　こどもアカウント編集用(kodomoEdit)　**************************/
 /************************** ↓　公開設定用(display)　**************************/
-    $sql = "select is_public from user where user_name = '$user_name'";
+    $sql = "SELECT is_public FROM user WHERE user_name = :user_name";
     $stmt=$pdo->prepare($sql);
+    $stmt->bindParam(':user_name', $user_name, PDO::PARAM_STR);
     $stmt->execute();
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     $is_public = $row['is_public'];
@@ -85,9 +91,11 @@ if(isset($_POST['kodomoEdit'][$value])){
     if(isset($_POST['display'])){
         $is_public=hsc($_POST['is_public']);
         try{
-            $sql="update user set is_public = ? where user_name = ?";
+            $sql="UPDATE user SET is_public = :is_public WHERE user_name = :user_name";
             $stmt=$pdo->prepare($sql);
-            $row=$stmt->execute(array($is_public,$user_name));
+            $stmt->bindParam(':is_public', $is_public, PDO::PARAM_INT);
+            $stmt->bindParam(':user_name', $user_name, PDO::PARAM_STR);
+            $row=$stmt->execute();
 
             if($is_public == 1){
                 $dispStMessage='<p style="margin-block-end:1em;">公開に設定されました。</p>';
@@ -104,12 +112,15 @@ if(isset($_POST['kodomoEdit'][$value])){
 if(isset($_POST['acount_del'])){
         $is_active=hsc($_POST['is_active']);
         try{
-            $sql="update main set del_st = 1 where user_name = ?";
+            $sql="UPDATE main SET is_deleted = 1 WHERE user_name = :user_name";
             $stmt=$pdo->prepare($sql);
-            $row=$stmt->execute(array($user_name));
-            $sql="update user set is_active = ? where user_name = ?";
+            $stmt->bindParam('user_name', $user_name, PDO::PARAM_STR);
+            $row=$stmt->execute();
+            $sql="UPDATE user SET is_active = :is_active WHERE user_name = :user_name";
             $stmt=$pdo->prepare($sql);
-            $row=$stmt->execute(array($is_active,$user_name));
+            $stmt->bindParam(':is_active', $is_active, PDO::PARAM_INT);
+            $stmt->bindParam(':user_name', $user_name, PDO::PARAM_STR);
+            $row=$stmt->execute();
             header("Location: acountDel.php");
         }catch(PDOExeption $e){
             $errorMessage="データベースエラー";
@@ -184,7 +195,7 @@ if(isset($_POST['acount_del'])){
         <legend>こどもアカウント編集</legend>
     <?php
         $i=0;
-        $sql = "select kodomo_name, birthday from kodomo where user_name = '{$user_name}'";
+        $sql = "SELECT kodomo_name, birthday FROM kodomo WHERE user_name = '{$user_name}'";
         $stmt=$pdo->prepare($sql);
         $row=$stmt->execute();
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)){

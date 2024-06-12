@@ -20,7 +20,6 @@
 <head>
 <meta charaset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<!-- <meta name="description" content="PUPUPAは「こどもが何て言っているのかわからない！」そんな幼児語の“困った”を解決する投稿型の幼児語辞典アプリです。" /> -->
 <title>PUPUPAアカウントリスト</title>
 <script src="js/form.js"></script>
 <script src="js/nav.js"></script>
@@ -40,7 +39,6 @@
             <li id="back"><p id="goBack"><span class="img"><img src="images/goback.svg" alt="戻る"></span><span class="moji">戻る</span></li>
             <li id="serch"><p id="serchButton"><span class="img"><img src="images/a_serch.svg" alt="検索する"></span><span class="moji">検索する</span></li>
             <li id="account_search"><a href="account_search.php"><span class="img"><img src="images/account_search.svg" alt="アカウントリスト"></span><span class="moji">アカウント<br>リスト</span></a></li>
-            <!-- <li id="youjigoUp"><a href="youjigoUp.php"><span class="img"><img src="images/post.svg" alt="投稿する"></span><span class="moji">投稿する</span></a></li> -->
             <li id="mypage"><a href="mypage.php" ><span class="img"><img id="nav" src="images/mypage.svg" alt="マイページ"></span><span class="moji">マイページ</span></a></li>
         </ul>
     </nav>
@@ -140,27 +138,28 @@
 /*------- ↓ SQL文を作成する -------*/
         require_once('mojiset.php');
         $mojiset = mojiset($initial);
-        $sql = "select user_id from user where user_name = '$user_name'";
+        $sql = "SELECT user_id FROM user WHERE user_name = :user_name";
         $stmt=$pdo->prepare($sql);
+        $stmt->bindParam(':user_name', $user_name, PDO::PARAM_STR);
         $row=$stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $user_id = $row['user_id'];
         if(isset($AorF)){
-            $sql = "select user_name, is_public, is_active, follow_status from user ";
+            $sql = "SELECT user_name, is_public, is_active, follow_status FROM user ";
             if($AorF == "all_accounts" && $initial == "all_alphabets"){
-                $sql = $sql."left join follow on user.user_id = follow.followee_id and follower_id = $user_id 
-                        where is_active = 1 ";
+                $sql = $sql."LEFT JOIN follow on user.user_id = follow.followee_id AND follower_id = :user_id 
+                        WHERE is_active = 1 ";
             }else if($AorF == "all_accounts" && $initial != "all_alphabets"){
-                $sql = $sql."left join follow on user.user_id = follow.followee_id and follower_id = $user_id 
-                        where is_active = 1 and user_name like '$mojiset[0]%' 
-                        or is_active = 1 and user_name like '$mojiset[1]%' ";
+                $sql = $sql."LEFT JOIN follow on user.user_id = follow.followee_id AND follower_id = :user_id 
+                        WHERE is_active = 1 AND user_name LIKE '$mojiset[0]%' 
+                        or is_active = 1 AND user_name LIKE '$mojiset[1]%' ";
             }else if($AorF == "following" && $initial == "all_alphabets"){
-                $sql = $sql."join follow on user.user_id = follow.followee_id 
-                        where is_active = 1 and follower_id = $user_id ";
+                $sql = $sql."JOIN follow on user.user_id = follow.followee_id 
+                        WHERE is_active = 1 AND follower_id = :user_id ";
             }else if($AorF == "following" && $initial != "all_alphabets"){
-                $sql = $sql."join follow on user.user_id = follow.followee_id 
-                        where is_active = 1 and user_name like '$mojiset[0]%' and follower_id = $user_id 
-                        or is_active = 1 and user_name like '$mojiset[1]%' and follower_id = $user_id ";
+                $sql = $sql."JOIN follow on user.user_id = follow.followee_id 
+                        WHERE is_active = 1 AND user_name LIKE '$mojiset[0]%' AND follower_id = :user_id 
+                        or is_active = 1 AND user_name LIKE '$mojiset[1]%' AND follower_id = :user_id ";
             }
             if($sort == "user_id_desc") {
                 $sql = $sql."order by user_id desc";
@@ -168,10 +167,23 @@
                 $sql = $sql."order by user_name asc";
             }
         }
+        
+        $stmt = $pdo->prepare($sql);
+        if(isset($AorF)){
+            if($AorF == "all_accounts" && $initial == "all_alphabets"){
+                $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            }else if($AorF == "all_accounts" && $initial != "all_alphabets"){
+                $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            }else if($AorF == "following" && $initial == "all_alphabets"){
+                $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            }else if($AorF == "following" && $initial != "all_alphabets"){
+                $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            }
+        }
+
 /*------- ↑ SQL文を作成する -------*/
     
 /*------- ↓ 各アカウントが未登録時の表示 -------*/
-        $stmt = $pdo->prepare($sql);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if(!$row) { //SQL文で問い合わせた結果が０だったら、各種”投稿されていません”を表示
@@ -196,7 +208,7 @@
             }
                     
         }else if($row) {
-            if($AorF == "all_accounts" ){
+            if($AorF == "all_accounts" && $initial == "all_alphabets"){
     ?>
                 <tr >
                     <td class="account_td" id="all_AorF" colspan="2"> 
@@ -221,7 +233,7 @@
 /*------- ↑ 各アカウントが未登録時の表示 -------*/
 
 /*------- ↓ DBから取得した結果の表示 -------*/
-        $stmt = $pdo->prepare($sql);
+        // $stmt = $pdo->prepare($sql);
         $stmt->execute();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) { // ← DBから取得した分だけ結果を表示する。
                 $selected_name = $row['user_name'];

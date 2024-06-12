@@ -3,13 +3,15 @@
     require_once('connect.php');
     $user_name=$_SESSION['user_name'];
     $pdo=connect();
-    $sql="select user_id from user where user_name = '$user_name'";
+    $sql="select user_id from user where user_name = :user_name";
     $stmt=$pdo->prepare($sql);
+    $stmt->bindParam(':user_name', $user_name, PDO::PARAM_STR);
     $stmt->execute();
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     $user_id = hsc($row['user_id']);
-    $sql = "select kodomo_name, kodomo_id from kodomo where user_id = '$user_id'";
+    $sql = "select kodomo_name, kodomo_id from kodomo where user_id = :user_id";
     $stmt=$pdo->prepare($sql);
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
     $row=$stmt->execute();
 
     $errorMessage="";
@@ -39,9 +41,17 @@
             $caption=hsc($_POST['caption']);
             $age_id=hsc($_POST['age_id']);
             try{
-                $sql="insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id) values(?,?,?,?,?,?,?,?)";
+                $sql="insert into main (user_id, kodomo_id, youjigo, otonago, kana, photo, caption, age_id) values(:user_id, :kodomo_id, :youjigo, :otonago, :kana, :photo, :caption, :age_id)";
                 $stmt=$pdo->prepare($sql);
-                $row=$stmt->execute(array($user_id,$kodomo_id,$youjigo,$otonago,$kana,$photo,$caption,$age_id));
+                $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+                $stmt->bindParam(':kodomo_id', $kodomo_id, PDO::PARAM_INT);
+                $stmt->bindParam(':youjigo', $youjigo, PDO::PARAM_STR);
+                $stmt->bindParam(':otonago', $otonago, PDO::PARAM_STR);
+                $stmt->bindParam(':kana', $kana, PDO::PARAM_STR);
+                $stmt->bindParam(':photo', $photo, PDO::PARAM_STR);
+                $stmt->bindParam(':caption', $caption, PDO::PARAM_STR);
+                $stmt->bindParam(':age_id', $age_id, PDO::PARAM_INT);
+                $row=$stmt->execute();
                 $youjigoUpMessage='<p>”'.$youjigo.'”が登録されました。</p>
                     <a class="anchor" href="index.php">トップページへ</a>
                     <a class="anchor" href="mypage.php">マイページへ</a>';

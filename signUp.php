@@ -34,20 +34,24 @@
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
             try{
                 $pdo=connect();
-                $sql="select count(*) as ninzu from user where user_name = (?)";
+                $sql="select count(*) as ninzu from user where user_name = :user_name";
                 $isUnique=$pdo->prepare($sql);
-                $isUnique->execute(array($user_name));
+                $isUnique->bindParam(':user_name', $user_name, PDO::PARAM_STR);
+                $isUnique->execute();
                 $result=$isUnique->fetch(PDO::FETCH_ASSOC);
                 if($result['ninzu'] !=0){
                     $errorMessage="すでにアカウント名が利用されています。<br>他のアカウント名で登録してください。";
                     $uerr=true;
                 }else{
-                    $sql="insert into user (user_name,password_hash) values(?,?)";
+                    $sql="insert into user (user_name,password_hash) values(:user_name, :password_hash)";
                     $stmt=$pdo->prepare($sql);
-                    $isTouroku=$stmt->execute(array($user_name,$password_hash));
+                    $stmt->bindParam(':user_name', $user_name, PDO::PARAM_STR);
+                    $stmt->bindParam(':password_hash', $password_hash, PDO::PARAM_STR);
+                    $isTouroku=$stmt->execute();
 
-                    $sql="select user_id from user where user_name = '$user_name'";
+                    $sql="select user_id from user where user_name = :user_name";
                     $stmt=$pdo->prepare($sql);
+                    $stmt->bindParam(':user_name', $user_name, PDO::PARAM_STR);
                     $stmt->execute();
                     $row = $stmt->fetch(PDO::FETCH_ASSOC);
                     $user_id = hsc($row['user_id']);
@@ -55,9 +59,12 @@
                     for($i = 0; $i < count($_POST['kodomo_name']); $i++){
                         $kodomo_name = hsc($_POST['kodomo_name'][$i]);
                         $birthday = hsc($_POST['birthday'][$i]);    
-                        $sql="insert into kodomo (user_id,kodomo_name,birthday) values(?,?,?)";
+                        $sql="insert into kodomo (user_id,kodomo_name,birthday) values(:user_id, :kodomo_name, :birthday)";
                         $stmt=$pdo->prepare($sql);
-                        $isTouroku=$stmt->execute(array($user_id,$kodomo_name,$birthday));  
+                        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+                        $stmt->bindParam(':kodomo_name', $kodomo_name, PDO::PARAM_STR);
+                        $stmt->bindParam(':birthday', $birthday, PDO::PARAM_STR);
+                        $isTouroku=$stmt->execute();  
                     }
                     $signUpMessage='<p>正しく登録されました。</p>
                                         <a class="anchor" href="index.php">ホームへ</a>

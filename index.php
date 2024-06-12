@@ -57,9 +57,10 @@
         <fieldset id="kodomo_name">
         <?php
             //↓検索フォームで、こどもの数が一人だったらlegend無し。複数いたら、"だれか選んでください"のlegendあり
-            // $sql = "select count(kodomo_id) from kodomo join user on main.user_id = user.user_id where user.user_name = '$user_name'";
-            $sql = "select count(kodomo_id) from kodomo join user on kodomo.user_id = user.user_id where user.user_name = '$selected_name'";
+            // $sql = "select count(kodomo_id) FROM kodomo JOIN user on main.user_id = user.user_id WHERE user.user_name = '$user_name'";
+            $sql = "SELECT count(kodomo_id) FROM kodomo JOIN user ON kodomo.user_id = user.user_id WHERE user.user_name = :user_name";
             $stmt=$pdo->prepare($sql);
+            $stmt->bindParam(':user_name', $selected_name, PDO::PARAM_STR);
             $count=$stmt->execute();
             $count = $stmt->fetch(PDO::FETCH_ASSOC);
             if($count['count(kodomo_id)'] >= 2){
@@ -68,8 +69,9 @@
         <?php
             } 
             //↓子供の名前のラジオボタンを人数分作る
-            $sql = "select kodomo_id,kodomo_name from kodomo join user on kodomo.user_id = user.user_id where user_name = '$selected_name'";
+            $sql = "SELECT kodomo_id,kodomo_name FROM kodomo JOIN user ON kodomo.user_id = user.user_id WHERE user_name = :user_name";
             $stmt=$pdo->prepare($sql);
+            $stmt->bindParam(':user_name', $selected_name, PDO::PARAM_STR);
             $row=$stmt->execute();
             while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
                 $kodomo_id = hsc($row['kodomo_id']);
@@ -234,12 +236,6 @@
             $sort = hsc($_GET['sort']);
             $kodomo_id = hsc($_GET['kodomo_id']);
             $youjigo = hsc($_GET['youjigo']);
-            // ↓ formで送られてきたkodomo_idでこどもの名前を取得する。
-            $sql = "select kodomo_name from kodomo where kodomo_id = '{$kodomo_id}'";
-            $stmt=$pdo->prepare($sql);
-            $name=$stmt->execute();
-            $name = $stmt->fetch(PDO::FETCH_ASSOC);
-            $kodomo_name = hsc($name['kodomo_name']);
         }
     
         /*------- ↓ 検索キーワードをまとめた見出しを作成する -------*/
@@ -247,12 +243,21 @@
     
         if($kodomo_id == "みんな") {
             $kodomo_name = "みんな";
+        }else if($kodomo_id != "みんな"){
+            // ↓ formで送られてきたkodomo_idでこどもの名前を取得する。
+            $sql = "SELECT kodomo_name FROM kodomo WHERE kodomo_id = :kodomo_id";
+            $stmt=$pdo->prepare($sql);
+            $stmt->bindParam(':kodomo_id', $kodomo_id, PDO::PARAM_INT);
+            $name=$stmt->execute();
+            $name = $stmt->fetch(PDO::FETCH_ASSOC);
+            $kodomo_name = hsc($name['kodomo_name']);           
         }
         if($count['count(kodomo_id)'] >= 2){ //こどもの人数が二人以上だったら見出しの始まりが ”みんな・” となる
             $searchMessage = $kodomo_name."・";
         }else if($count['count(kodomo_id)'] == 1){ //こどもが一人だったら見出しの始まりが ”こどもの名前・” となる
-            $sql = "select kodomo_name from kodomo join user on kodomo.user_id = user.user_id where user_name = '{$selected_name}'";
+            $sql = "SELECT kodomo_name FROM kodomo JOIN user ON kodomo.user_id = user.user_id WHERE user_name = :user_name";
             $stmt=$pdo->prepare($sql);
+            $stmt->bindParam(':user_name', $selected_name, PDO::PARAM_STR);
             $row=$stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $kodomo_name = hsc($row['kodomo_name']);
@@ -283,8 +288,9 @@
 
     try {
 /*------- ↓ SQL文を作成する -------*/
-$sql = "select user_id from user where user_name = '$user_name'";
+$sql = "SELECT user_id FROM user WHERE user_name = :user_name";
 $stmt=$pdo->prepare($sql);
+$stmt->bindParam(':user_name', $user_name, PDO::PARAM_STR);
 $row=$stmt->execute();
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 $user_id = $row['user_id'];
@@ -293,35 +299,41 @@ require_once('mojiset.php');
 
         $where = "";
         $order_by = "";
+        
+        // 安全性のために $YorO の値を検証する
+        $allowed_columns = ['youjigo', 'kana'];
+        if (!in_array($YorO, $allowed_columns)) {
+            die("Invalid column name specified.");
+        }
 
         if(isset($AorF)){
-            $sql = "select main_id, user_name, kodomo_name, youjigo, otonago, kana, photo, 
-                    caption, age, posted_at, is_public, is_deleted from main 
-                    join user on main.user_id = user.user_id 
-                    join follow on user.user_id = follow.followee_id 
-                    join kodomo on main.kodomo_id = kodomo.kodomo_id 
-                    join age on main.age_id = age.age_id ";
+            $sql = "SELECT main_id, user_name, kodomo_name, youjigo, otonago, kana, photo, 
+                    caption, age, posted_at, is_public, is_deleted FROM main 
+                    JOIN user ON main.user_id = user.user_id 
+                    JOIN follow ON user.user_id = follow.followee_id 
+                    JOIN kodomo ON main.kodomo_id = kodomo.kodomo_id 
+                    JOIN age ON main.age_id = age.age_id ";
         }else if(isset($YorO)){
-            $sql = "select main_id, user_name, kodomo_name, youjigo, otonago, kana, photo, 
-                    caption, age, posted_at, is_public, is_deleted from main 
-                    join user on main.user_id = user.user_id 
-                    join kodomo on main.kodomo_id = kodomo.kodomo_id 
-                    join age on main.age_id = age.age_id ";
+            $sql = "SELECT main_id, user_name, kodomo_name, youjigo, otonago, kana, photo, 
+                    caption, age, posted_at, is_public, is_deleted FROM main 
+                    JOIN user ON main.user_id = user.user_id 
+                    JOIN kodomo ON main.kodomo_id = kodomo.kodomo_id 
+                    JOIN age ON main.age_id = age.age_id ";
         }
 
         if($_GET['AorF']){
-            $where = "is_deleted = 0 and  follower_id = $user_id ";
-            $order_by = "order by posted_at desc";
+            $where = "is_deleted = 0 AND  follower_id = :user_id ";
+            $order_by = "ORDER BY posted_at desc";
         }else if(!$_GET['selected_name']){
-            $where = "is_public = 1 and is_deleted = 0 ";
-            $order_by = "order by posted_at desc";
+            $where = "is_public = 1 AND is_deleted = 0 ";
+            $order_by = "ORDER BY posted_at desc";
         }else if($_GET['selected_name']){
             if($kodomo_id == "みんな"){
-                $where = "user_name = '$selected_name' ";
-                $order_by = "order by birthday desc, main.age_id desc, posted_at desc";
+                $where = "user_name = :selected_name ";
+                $order_by = "ORDER BY birthday desc, main.age_id desc, posted_at desc";
             }else if($kodomo != "みんな"){
-                $where = "main.kodomo_id = $kodomo_id and user_name = '$selected_name' ";
-                $order_by = "order by posted_at desc";
+                $where = "main.kodomo_id = :kodomo_id AND user_name = :selected_name ";
+                $order_by = "ORDER BY posted_at desc";
             }
         }
 
@@ -335,31 +347,43 @@ require_once('mojiset.php');
                 $initial == "や" || $initial == "ゆ" || $initial == "よ" || 
                 $initial == "ら" || $initial == "り" || $initial == "る" || $initial == "れ" || $initial == "ろ" || 
                 $initial == "わ" || $initial == "を" || $initial == "ん") {
-            $sql = $sql."where is_public = 1 and is_deleted = 0 and $YorO like '$mojiset%' and $where";
+            $sql = $sql."WHERE is_public = 1 AND is_deleted = 0 AND $YorO LIKE '$mojiset%' AND $where";
         }else if($initial == "か" || $initial == "き" || $initial == "く" || $initial == "け" || $initial == "こ" || 
                 $initial == "さ" || $initial == "し" || $initial == "す" || $initial == "せ" || $initial == "そ" || 
                 $initial == "た" || $initial == "ち" || $initial == "つ" || $initial == "て" || $initial == "と") {
-            $sql = $sql."where is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[0]%' and $where
-                    or is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[1]%' and $where";
+            $sql = $sql."WHERE is_public = 1 AND is_deleted = 0 AND $YorO LIKE '$mojiset[0]%' AND $where
+                    or is_public = 1 AND is_deleted = 0 AND $YorO LIKE '$mojiset[1]%' AND $where";
         }else if($initial == "は" || $initial == "ひ" || $initial == "ふ" || $initial == "へ" || $initial == "ほ") {
-            $sql = $sql."where is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[0]%' and $where
-                    or is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[1]%' and $where
-                    or is_public = 1 and is_deleted = 0 and $YorO like '$mojiset[2]%' and $where";
+            $sql = $sql."WHERE is_public = 1 AND is_deleted = 0 AND $YorO LIKE '$mojiset[0]%' AND $where
+                    or is_public = 1 AND is_deleted = 0 AND $YorO LIKE '$mojiset[1]%' AND $where
+                    or is_public = 1 AND is_deleted = 0 AND $YorO LIKE '$mojiset[2]%' AND $where";
         }else if($initial == "すべて"){
-            $sql = $sql."where $where";
+            $sql = $sql."WHERE $where";
         }
 
         if($sort == "posted_at") {
             $sql = $sql.$order_by;
         }else if($YorO == "youjigo") {
-            $sql = $sql."order by youjigo asc";
+            $sql = $sql."ORDER BY youjigo asc";
         }else if($YorO == "kana") {
-            $sql = $sql."order by kana asc";
+            $sql = $sql."ORDER BY kana asc";
+        }
+
+        $stmt = $pdo->prepare($sql);
+
+        if($_GET['AorF']){
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        }else if($_GET['selected_name']){
+            if($kodomo_id == "みんな"){
+                $stmt->bindParam(':selected_name', $selected_name, PDO::PARAM_STR);
+            }else if($kodomo != "みんな"){
+                $stmt->bindParam(':kodomo_id', $kodomo_id, PDO::PARAM_INT);
+                $stmt->bindParam(':selected_name', $selected_name, PDO::PARAM_INT);
+            }
         }
 /*------- ↑ SQL文を作成する -------*/
     
 /*------- ↓ ようじ語及びおとな語が未登録時の表示 -------*/
-        $stmt = $pdo->prepare($sql);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if(!$row) { //SQL文で問い合わせた結果が０だったら、各種”投稿されていません”を表示
@@ -393,7 +417,7 @@ require_once('mojiset.php');
 /*------- ↑ ようじ語及びおとな語が未登録時の表示 -------*/
 
 /*------- ↓ DBから取得した結果の表示 -------*/
-        $stmt = $pdo->prepare($sql);
+        // $stmt = $pdo->prepare($sql);
         $stmt->execute();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) { // ← DBから取得した分だけ結果を表示する。
                 $user_name = hsc($row['user_name']);
