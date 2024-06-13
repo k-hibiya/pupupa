@@ -58,7 +58,7 @@ if(isset($_POST['youjigoEdit'])){
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 $kotoba = hsc($row['kotoba']);
                 $flag = $kotoba.$main_id;
-                header("Location: mypage.php?YorO=$YorO&initial=$initial&kodomo_id=$kodomo_id&sort=$sort#$flag");
+                header("Location: index.php?mypage=1&selected_name=$user_name&YorO=$YorO&initial=$initial&kodomo_id=$kodomo_id&sort=$sort#$flag");
             }catch(PDOExeption $e){
                 $errorMessage="データベースエラー";
                 echo $e->getMessage();
@@ -108,7 +108,7 @@ if(isset($_POST['youjigoEdit'])){
             $sort=hsc($_POST['sort']);
             $tango=hsc($_POST['tango']);
             $flag = $tango.$main_id;
-            header("Location: mypage.php?YorO=$YorO&initial=$initial&kodomo_id=$kodomo_id&sort=$sort#$flag");
+            header("Location: index.php?mypage=1&selected_name=$user_name&YorO=$YorO&initial=$initial&kodomo_id=$kodomo_id&sort=$sort#$flag");
     }    
 /**************************　↑ 　戻るボタン(editCancel)　**************************/
 ?>
@@ -133,7 +133,7 @@ if(isset($_POST['youjigoEdit'])){
             <li id="index"><a href="index.php"><span class="img"><img src="images/home.svg" alt="ホーム"></span><span class="moji">ホーム</span></a></li>
             <li id="back"><p id="goBack"><span class="img"><img src="images/goback.svg" alt="戻る"></span><span class="moji">戻る</span></li>
             <li id="youjigoUp"><a href="youjigoUp.php"><span class="img"><img src="images/post.svg" alt="投稿する"></span><span class="moji">投稿する</span></a></li>
-            <li id="mypage"><a href="mypage.php" ><span class="img"><img id="nav" src="images/mypage.svg" alt="マイページ"></span><span class="moji">マイページ</span></a></li>
+            <li id="mypage"><a href="index.php?mypage=1&selected_name=<?=$user_name?>" ><span class="img"><img id="nav" src="images/mypage.svg" alt="マイページ"></span><span class="moji">マイページ</span></a></li>
         </ul>
     </nav>
 </header>

@@ -68,7 +68,7 @@
                     }
                     $signUpMessage='<p>正しく登録されました。</p>
                                         <a class="anchor" href="index.php">ホームへ</a>
-                                        <a class="anchor" href="mypage.php">マイページへ</a>';
+                                        <a class="anchor" href="index.php?mypage=1&selected_name='.$user_name.'">マイページへ</a>';
                     session_regenerate_id(true);
                     $_SESSION['user_name']=$user_name;
                     mkdir("./upImages/{$user_name}",0755);
@@ -105,7 +105,7 @@
         <?php
             if(isset($_SESSION['user_name'])) {
         ?>
-            <li id="mypage"><a href="mypage.php" ><span class="img"><img id="nav" src="images/mypage.svg" alt="マイページ"></span><span class="moji">マイページ</span></a></li>
+            <li id="mypage"><a href="index.php?mypage=1&selected_name=<?=$user_name?>" ><span class="img"><img id="nav" src="images/mypage.svg" alt="マイページ"></span><span class="moji">マイページ</span></a></li>
         <?php    
             }
         ?>

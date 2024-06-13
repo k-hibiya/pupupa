@@ -1,6 +1,7 @@
 <?php
     require_once('toLogin.php');
     require_once('connect.php');
+    $user_name = $_SESSION['user_name'];
 ?>
 <!DOCTYPE html>
 <html>
@@ -19,7 +20,7 @@
     <nav>
         <ul>
             <li id="index"><a href="index.php"><span class="img"><img src="images/home.svg" alt="ホーム"></span><span class="moji">ホーム</span></a></li>
-            <li id="mypage"><a href="mypage.php" ><span class="img"><img id="nav" src="images/mypage.svg" alt="マイページ"></span><span class="moji">マイページ</span></a></li>
+            <li id="mypage"><a href="index.php?mypage=1&selected_name=<?=$user_name?>" ><span class="img"><img id="nav" src="images/mypage.svg" alt="マイページ"></span><span class="moji">マイページ</span></a></li>
         </ul>
     </nav>
 </header>
@@ -34,7 +35,7 @@
     ?>
     <fieldset id="acountDel">
         <p>"<?=$youjigo?>"を削除しました。</p>
-        <a class="anchor" href="mypage.php?YorO=<?=$YorO?>&initial=<?=$initial?>&kodomo_id=<?=$kodomo_id?>&sort=<?=$sort?>">マイページ</a>
+        <a class="anchor" href="index.php?mypage=1&selected_name=<?=$user_name?>&YorO=<?=$YorO?>&initial=<?=$initial?>&kodomo_id=<?=$kodomo_id?>&sort=<?=$sort?>">マイページ</a>
     </fieldset>
 </main>
 </body>

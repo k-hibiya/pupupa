@@ -49,35 +49,6 @@ if(isset($_POST['kodomoPlus'])){
     $uerr=true;
 }
 /************************** ↑　こどもアカウント追加用(kodomoPlus)　**************************/
-/**************************　こどもアカウント編集用(kodomoEdit)　**************************/
-/*$errorMessage2="";
-$uerr2=false;
-$value=$_POST['i'];
-if(isset($_POST['kodomoEdit'][$value])){
-    if(empty($_POST['kodomo_name'])){
-        $errorMessage2="こどもアカウント名が未入力です。";
-        $uerr2=true;
-    }else if(empty($_POST['birthday'])){
-        $errorMessage2="こどもの誕生日が未入力です。";
-        $uerr2=true;
-    }
-    if(!$uerr2){
-        try{
-                $sql="UPDATE kodomo set kodomo_name = ?, birthday = ? WHERE user_name = ?";
-                $stmt=$pdo->prepare($sql);
-                $isTouroku2=$stmt->execute(array(hsc($_POST['kodomo_name']),hsc($_POST['birthday']),$user_name));  
-            $kodomoEditMessage='<p>正しく登録されました</p>';
-        }catch(PDOExeption $e){
-            $errorMessage2="データベースエラー";
-            echo $e->getMessage();
-        }
-        $uerr2=true;
-    }
-        
-}else{
-    $uerr2=true;
-}
-/************************** ↑　こどもアカウント編集用(kodomoEdit)　**************************/
 /************************** ↓　公開設定用(display)　**************************/
     $sql = "SELECT is_public FROM user WHERE user_name = :user_name";
     $stmt=$pdo->prepare($sql);
@@ -138,7 +109,6 @@ if(isset($_POST['acount_del'])){
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="stylesheet" href="css/union.css">
 <link rel="stylesheet" href="css/acountEdit.css">
-<!-- <script src="js/goBack.js"></script> -->
 <script src="js/inputPlus.js"></script>
 <script src="js/nav.js"></script>
 </head>
@@ -152,7 +122,7 @@ if(isset($_POST['acount_del'])){
             <li id="index"><a href="index.php"><span class="img"><img src="images/home.svg" alt="ホーム"></span><span class="moji">ホーム</span></a></li>
             <li id="back"><p id="goBack"><span class="img"><img src="images/goback.svg" alt="戻る"></span><span class="moji">戻る</span></li>
             <li id="youjigoUp"><a href="youjigoUp.php"><span class="img"><img src="images/post.svg" alt="投稿する"></span><span class="moji">投稿する</span></a></li>
-            <li id="mypage"><a href="mypage.php" ><span class="img"><img id="nav" src="images/mypage.svg" alt="マイページ"></span><span class="moji">マイページ</span></a></li>
+            <li id="mypage"><a href="index.php?mypage=1&selected_name=<?=$user_name?>" ><span class="img"><img id="nav" src="images/mypage.svg" alt="マイページ"></span><span class="moji">マイページ</span></a></li>
             <li id="acountEdit"><a href="acountEdit.php" ><span class="img"><img id="nav" src="images/acount.svg" alt="アカウント"></span><span class="moji">アカウント管理</span></a></li>
         </ul>
     </nav>
@@ -186,38 +156,6 @@ if(isset($_POST['acount_del'])){
     }
 ?>
 <!---------------------------- ↑ こどもアカウント追加用(kodomoPlus) ---------------------------------->
-<!----------------------------こどもアカウント編集(kodomoEdit)---------------------------------->
-<!--<?php
-    /*if ($uerr2){
-?>
-    <fieldset>
-        <div id="err"><?= $errorMessage2 ?></div>
-        <legend>こどもアカウント編集</legend>
-    <?php
-        $i=0;
-        $sql = "SELECT kodomo_name, birthday FROM kodomo WHERE user_name = '{$user_name}'";
-        $stmt=$pdo->prepare($sql);
-        $row=$stmt->execute();
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-            ?>
-        <form name="kodomoEdit" action="<?=$_SERVER['SCRIPT_NAME']?>" method="post">
-                <label for="youjigo">名前</label><br>
-                <input type="text" name="kodomo_name" value=<?=$row['kodomo_name']?>><br>
-                <label for="otonago">誕生日</label><br>
-                <input type="date" name="birthday" value=<?=$row['birthday']?>><br>
-                <input type="hidden" name="i" value=<?=$i?>>
-                <input type="submit" name="kodomoEdit" value="実行">
-        </form>
-    <?php
-        $i++;
-        }
-    ?>
-            <div id="kodomoEdit"><?=$kodomoPlusMessage?></div>
-    </fieldset>
-    <?php
-    }
-*/?>-->
-<!---------------------------- ↑ こどもアカウント編集(kodomoEdit) ---------------------------------->
 <!---------------------------- ↓ 公開設定用(display) ---------------------------------->
 
     <form class="acountEdit" name="display" action="<?=$_SERVER['SCRIPT_NAME']?>" method="post">

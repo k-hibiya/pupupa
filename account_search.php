@@ -39,7 +39,7 @@
             <li id="back"><p id="goBack"><span class="img"><img src="images/goback.svg" alt="戻る"></span><span class="moji">戻る</span></li>
             <li id="serch"><p id="serchButton"><span class="img"><img src="images/a_serch.svg" alt="検索する"></span><span class="moji">検索する</span></li>
             <li id="account_search"><a href="account_search.php"><span class="img"><img src="images/account_search.svg" alt="アカウントリスト"></span><span class="moji">アカウント<br>リスト</span></a></li>
-            <li id="mypage"><a href="mypage.php" ><span class="img"><img id="nav" src="images/mypage.svg" alt="マイページ"></span><span class="moji">マイページ</span></a></li>
+            <li id="mypage"><a href="index.php?mypage=1&selected_name=<?=$user_name?>" ><span class="img"><img id="nav" src="images/mypage.svg" alt="マイページ"></span><span class="moji">マイページ</span></a></li>
         </ul>
     </nav>
 </header>
@@ -49,7 +49,7 @@
         <fieldset id="AorF">
             <legend>検索方法を選んでください</legend>
                 <label><input name="AorF" type="radio" value="all_accounts" checked="checked">すべてのアカウント</label>
-                <label><input name="AorF" type="radio" value="following">フォロー中</label>
+                <label><input name="AorF" type="radio" value="following">フォロー中のアカウント</label>
         </fieldset>
         <fieldset id="initial">
             <legend>どれかひとつ選んでください</legend>
@@ -208,6 +208,11 @@
             }
                     
         }else if($row) {
+            $count_row = 0; 
+            $stmt->execute();
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) { // ← DBから取得した分だけ結果を表示する。
+                $count_row++;
+            }
             if($AorF == "all_accounts" && $initial == "all_alphabets"){
     ?>
                 <tr >
@@ -218,12 +223,12 @@
                     </td>
                 </tr> 
     <?php
-            }else if($AorF == "following" && $initial == "all_alphabets"){
+            }else if($AorF == "following" && $initial == "all_alphabets" && $count_row >= 2){
             ?>
                 <tr >
                     <td class="account_td" id="all_AorF" colspan="2"> 
                         <div>
-                            <span><a href="index.php?AorF=all_followings">すべてのフォロー中のアカウント</a></span>
+                            <span><a href="index.php?selected_followee=all">すべてのフォロー中のアカウント</a></span>
                         </div>
                     </td>
                 </tr> 
@@ -257,7 +262,7 @@
                     <tr >
                         <td class="account_td" colspan="2">
                             <div>
-                                <span><a href="index.php?selected_name=<?=$selected_name?>"><?=$selected_name?></a></span>
+                                <span><a href="index.php?selected_followee=specific&selected_name=<?=$selected_name?>"><?=$selected_name?></a></span>
                                 <span class="follow_button"><p class="unfollow" data-selected-name="<?=$selected_name?>">フォロー中</p></span>
                             </div>
                         </td>
@@ -275,14 +280,13 @@
                             </div>
                         </td>
                     </tr> 
-<!---------------------- ↑ ここまでテーブル ---------------------->
-<?php
+            <?php
                         }if($follow_status == 1){
-                            ?>        
+            ?>        
                     <tr >
                         <td class="account_td" colspan="2">
                             <div>
-                                <span><a href="index.php?selected_name=<?=$selected_name?>"><?=$selected_name?></a></span>
+                                <span><a href="index.php?selected_followee=specific&selected_name=<?=$selected_name?>"><?=$selected_name?></a></span>
                                 <span class="follow_button"><p class="unfollow" data-selected-name="<?=$selected_name?>">フォロー中</p></span>
                             </div>
                         </td>

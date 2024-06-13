@@ -1,3 +1,10 @@
+<?php
+    session_start();
+    $user_name=$_SESSION['user_name'];
+    require_once('connect.php'); //←データベース接続情報を持ったPDOインスタンスを返す connect() が入っている。
+    $pdo=connect();
+?>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -21,30 +28,41 @@
             <li id="index"><a href="index.php"><span class="img"><img src="images/home.svg" alt="ホーム"></span><span class="moji">ホーム</span></a></li>
             <li id="back"><p id="goBack"><span class="img"><img src="images/goback.svg" alt="戻る"></span><span class="moji">戻る</span></li>
             <li id="serch"><p id="serchButton"><span class="img"><img src="images/serch.svg" alt="検索する"></span><span class="moji">検索する</span></li>
-            <li id="account_search"><a href="account_search.php"><span class="img"><img src="images/account_search.svg" alt="アカウントリスト"></span><span class="moji">アカウント<br>リスト</span></a></li>
-            <!-- <li id="youjigoUp"><a href="youjigoUp.php"><span class="img"><img src="images/post.svg" alt="投稿する"></span><span class="moji">投稿する</span></a></li> -->
 <?php
-    session_start();
+    if($_GET['mypage'] == 1){
+?>
+            <li id="youjigoUp"><a href="youjigoUp.php"><span class="img"><img src="images/post.svg" alt="投稿する"></span><span class="moji">投稿する</span></a></li>
+<?php
+    }
+?>
+<?php
+    if(!isset($_GET['mypage'])){
+?>
+            <li id="account_search"><a href="account_search.php"><span class="img"><img src="images/account_search.svg" alt="アカウントリスト"></span><span class="moji">アカウント<br>リスト</span></a></li>
+<?php
+    }
+?>
+<?php
+
     if(!isset($_SESSION['user_name'])) {
 ?>
             <li id="login"><a href="login.php" ><span class="img"><img id="nav" src="images/login.svg" alt="ログイン"></span><span class="moji">ログイン</span></a></li>
 <?php
     }else if(isset($_SESSION['user_name'])) {
 ?>
-            <li id="mypage"><a href="mypage.php" ><span class="img"><img id="nav" src="images/mypage.svg" alt="マイページ"></span><span class="moji">マイページ</span></a></li>
+            <li id="mypage"><a href="index.php?mypage=1&selected_name=<?=$user_name?>" ><span class="img"><img id="nav" src="images/mypage.svg" alt="マイページ"></span><span class="moji">マイページ</span></a></li>
 <?php    
+        if(isset($_SESSION['user_name']) && $_GET['mypage'] == 1 && $_GET['selected_name'] == $_SESSION['user_name']){
+?>
+            <li id="acountEdit"><a href="acountEdit.php" ><span class="img"><img id="nav" src="images/acount.svg" alt="アカウント"></span><span class="moji">アカウント<br>管理</span></a></li>
+<?php
+        }
     }
 ?>
         </ul>
     </nav>
 </header>
 <main>
-<?php
-    require_once('connect.php'); //←データベース接続情報を持ったPDOインスタンスを返す connect() が入っている。
-    // session_start();
-    $user_name=$_SESSION['user_name'];
-    $pdo=connect();
-?>
 
 <!------------------------------------------- ↓ 検索form ------------------------------------------->
 
@@ -53,7 +71,13 @@
         $selected_name="";
         if($_GET['selected_name']){
             $selected_name = $_GET['selected_name'];
+            if($_GET['mypage'] == 1){
+                ?>
+                    <input type="hidden" name="mypage" value=1>
+    <?php
+        }
     ?>
+        <input name="selected_name" type="hidden" value="<?=$selected_name?>">
         <fieldset id="kodomo_name">
         <?php
             //↓検索フォームで、こどもの数が一人だったらlegend無し。複数いたら、"だれか選んでください"のlegendあり
@@ -92,9 +116,13 @@
     <?php
         }
 
-        if(isset($_GET['AorF'])){
-    ?>
-        <input type="hidden" name="AorF" value="all_followings">
+        if($_GET['selected_followee'] == "all"){
+            ?>
+                <input type="hidden" name="selected_followee" value="all">
+    <?php
+        }else if($_GET['selected_followee'] == "specific"){
+            ?>
+                <input type="hidden" name="selected_followee" value="specific">
     <?php
         }
     ?>
@@ -180,7 +208,6 @@
             <div>
                 <label><input name="sort" type="radio" value="asc" checked="checked">あいうえお順</label>
                 <label><input name="sort" type="radio" value="posted_at">新着順</label>
-                <input name="selected_name" type="hidden" value="<?=$selected_name?>">
             </div>       
         </fieldset>
         <button type="submit" value="検索">検索</button>
@@ -199,47 +226,41 @@
             }
 
         */
-    require_once ('midasi.php'); //←名前以外の検索キーワードを見出しとしてまとめて返す midasi() が入っている
 
-    if(!$_GET['selected_name']){
+    if(isset($_GET['selected_followee'])){//フォロー中のアカウントまたはフォロー中のアカウント全てが選択された時
+        $selected_followee = hsc($_GET['selected_followee']);
+    }
 
-        if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作成用の変数定義
-            if(isset($_GET['AorF'])){
-                $AorF = hsc($_GET['AorF']);
-            }
+    if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作成用の変数定義
         $YorO = "youjigo";
-            $initial = "すべて";
-            $sort = "posted_at";
-        }else if(isset($_GET['YorO'])) { //formが送られてきた場合のSQL作成用の変数定義
-            if(isset($_GET['AorF'])){
-                $AorF = hsc($_GET['AorF']);
-            }
-            $YorO = hsc($_GET['YorO']);
-            $initial = hsc($_GET['initial']);
-            $sort = hsc($_GET['sort']);
-        }
+        $initial = "すべて";
+        $sort = "posted_at";
+    }else if(isset($_GET['YorO'])) { //formが送られてきた場合のSQL作成用の変数定義
+        $YorO = hsc($_GET['YorO']);
+        $initial = hsc($_GET['initial']);
+        $sort = hsc($_GET['sort']);
+    }
+
+    require_once ('midasi.php'); //←名前以外の検索キーワードを見出しとしてまとめて返す midasi() が入っている
+    $midasi = midasi($YorO, $initial, $sort); //例、"ようじ語・すべて・あいうえお順"
+
+    if(!$_GET['selected_name'] && $selected_followee == "all"){//index.phpのデフォルトモード
         /*------- ↓ 検索キーワードをまとめた見出しを作成する -------*/
-        $midasi = midasi($YorO, $initial, $sort); //例、"ようじ語・すべて・あいうえお順"
+        $searchMessage = "フォロー中・".$midasi;
+
+    }else if(!$_GET['selected_name']){//index.phpのデフォルトモード
+        /*------- ↓ 検索キーワードをまとめた見出しを作成する -------*/
         $searchMessage = $midasi;
 
-    } else if($_GET{'selected_name'}){
-
+    }else if($_GET{'selected_name'}){
         if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作成用の変数定義
-            $YorO = "youjigo";
-            $initial = "すべて";
-            $sort = "posted_at";
             $kodomo_id = "みんな";
-            $kodomo_name = "みんな";
         }else if(isset($_GET['YorO'])) { //formが送られてきた場合のSQL作成用の変数定義
-            $YorO = hsc($_GET['YorO']);
-            $initial = hsc($_GET['initial']);
-            $sort = hsc($_GET['sort']);
             $kodomo_id = hsc($_GET['kodomo_id']);
-            $youjigo = hsc($_GET['youjigo']);
+            // $youjigo = hsc($_GET['youjigo']);
         }
     
         /*------- ↓ 検索キーワードをまとめた見出しを作成する -------*/
-        $midasi = midasi($YorO, $initial, $sort); //例、"ようじ語・すべて・あいうえお順"
     
         if($kodomo_id == "みんな") {
             $kodomo_name = "みんな";
@@ -306,7 +327,7 @@ require_once('mojiset.php');
             die("Invalid column name specified.");
         }
 
-        if(isset($AorF)){
+        if(isset($selected_followee)){
             $sql = "SELECT main_id, user_name, kodomo_name, youjigo, otonago, kana, photo, 
                     caption, age, posted_at, is_public, is_deleted FROM main 
                     JOIN user ON main.user_id = user.user_id 
@@ -321,18 +342,26 @@ require_once('mojiset.php');
                     JOIN age ON main.age_id = age.age_id ";
         }
 
-        if($_GET['AorF']){
-            $where = "is_deleted = 0 AND  follower_id = :user_id ";
+        if($selected_followee == "all"){
+            $where = "is_deleted = 0 AND follower_id = :user_id ";
             $order_by = "ORDER BY posted_at desc";
         }else if(!$_GET['selected_name']){
             $where = "is_public = 1 AND is_deleted = 0 ";
             $order_by = "ORDER BY posted_at desc";
+        }else if(isset($_GET['selected_name']) && $selected_followee == "specific"){
+            if($kodomo_id == "みんな"){
+                $where = "is_deleted = 0 AND user_name = :selected_name AND follower_id = :user_id ";
+                $order_by = "ORDER BY  posted_at desc";
+            }else if($kodomo != "みんな"){
+                $where = "is_deleted = 0 AND main.kodomo_id = :kodomo_id AND user_name = :selected_name AND follower_id = :user_id ";
+                $order_by = "ORDER BY posted_at desc";
+            }
         }else if($_GET['selected_name']){
             if($kodomo_id == "みんな"){
-                $where = "user_name = :selected_name ";
-                $order_by = "ORDER BY birthday desc, main.age_id desc, posted_at desc";
+                $where = "is_public = 1 AND is_deleted = 0 AND user_name = :selected_name ";
+                $order_by = "ORDER BY  posted_at desc";
             }else if($kodomo != "みんな"){
-                $where = "main.kodomo_id = :kodomo_id AND user_name = :selected_name ";
+                $where = "is_public = 1 AND is_deleted = 0 AND main.kodomo_id = :kodomo_id AND user_name = :selected_name ";
                 $order_by = "ORDER BY posted_at desc";
             }
         }
@@ -362,7 +391,7 @@ require_once('mojiset.php');
         }
 
         if($sort == "posted_at") {
-            $sql = $sql.$order_by;
+            $sql = $sql."ORDER BY posted_at desc";
         }else if($YorO == "youjigo") {
             $sql = $sql."ORDER BY youjigo asc";
         }else if($YorO == "kana") {
@@ -371,14 +400,23 @@ require_once('mojiset.php');
 
         $stmt = $pdo->prepare($sql);
 
-        if($_GET['AorF']){
+        if($selected_followee == "all"){
             $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        }else if(isset($_GET['selected_name']) && $selected_followee == "specific"){
+            if($kodomo_id == "みんな"){
+                $stmt->bindParam(':selected_name', $selected_name, PDO::PARAM_STR);
+                $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            }else if($kodomo != "みんな"){
+                $stmt->bindParam(':kodomo_id', $kodomo_id, PDO::PARAM_INT);
+                $stmt->bindParam(':selected_name', $selected_name, PDO::PARAM_STR);
+                $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            }
         }else if($_GET['selected_name']){
             if($kodomo_id == "みんな"){
                 $stmt->bindParam(':selected_name', $selected_name, PDO::PARAM_STR);
             }else if($kodomo != "みんな"){
                 $stmt->bindParam(':kodomo_id', $kodomo_id, PDO::PARAM_INT);
-                $stmt->bindParam(':selected_name', $selected_name, PDO::PARAM_INT);
+                $stmt->bindParam(':selected_name', $selected_name, PDO::PARAM_STR);
             }
         }
 /*------- ↑ SQL文を作成する -------*/
@@ -417,7 +455,6 @@ require_once('mojiset.php');
 /*------- ↑ ようじ語及びおとな語が未登録時の表示 -------*/
 
 /*------- ↓ DBから取得した結果の表示 -------*/
-        // $stmt = $pdo->prepare($sql);
         $stmt->execute();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) { // ← DBから取得した分だけ結果を表示する。
                 $user_name = hsc($row['user_name']);
@@ -435,6 +472,15 @@ require_once('mojiset.php');
         
                 $src = "upImages/".$user_name."/".$photo;
 
+                if($_GET['mypage'] == 1 && $_GET['selected_name'] == $_SESSION['user_name']){ //mypageモードが選択されていたら、mypageモード用の編集ボタンを挿入する準備をする。
+                    $edit = '<span id="edit">
+                                <a href="youjigoEdit.php?photo='.$photo.'&YorO='.$YorO.'&initial='.$initial.
+                                        '&kodomo_id='.$kodomo_id.'&sort='.$sort.'&main_id='.$main_id.'&age='.$age.'">
+                                        編集
+                                </a>
+                            </span>';
+                }
+                
                 if($row['photo'] == ""){ //写真をアップロードしないユーザー用の画像。乱数で挿入される
                     $num = mt_rand(1,6);
                     switch($num){
@@ -463,6 +509,7 @@ require_once('mojiset.php');
                     <tr >
                         <td class="info" id="<?=$youjigo?><?=$main_id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
                             <img id="yajirusi" src="images/yajirusi.svg"><span><?=$user_name?></span>・<span><?=$kodomo_name?></span>・<span><?=$age?></span>
+                            <?=$edit?>
                         </td>
                     </tr> 
                     <tr >
@@ -485,6 +532,7 @@ require_once('mojiset.php');
                     <tr >
                         <td class="info" id="<?=$otonago?><?=$main_id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
                             <img id="yajirusi" src="images/yajirusi.svg"><span><?=$user_name?></span>・<span><?=$kodomo_name?></span>・<span><?=$age?></span>
+                            <?=$edit?>
                     </tr> 
                     <tr >
                         <td class="img" colspan="2">
@@ -506,6 +554,7 @@ require_once('mojiset.php');
                     <tr >
                         <td class="info" id="<?=$youjigo?><?=$main_id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
                             <img id="yajirusi" src="images/yajirusi.svg"><span><?=$user_name?></span>・<span><?=$kodomo_name?></span>・<span><?=$age?></span>
+                            <?=$edit?>
                         </td>
                     </tr> 
                     <tr >
@@ -528,6 +577,7 @@ require_once('mojiset.php');
                     <tr >
                         <td class="info" id="<?=$otonago?><?=$main_id?>" colspan="2"> <!-- ← ページ内遷移のためのidを付けておく -->
                             <img id="yajirusi" src="images/yajirusi.svg"><span><?=$user_name?></span>・<span><?=$kodomo_name?></span>・<span><?=$age?></span>
+                            <?=$edit?>
                         </td>
                     </tr> 
                     <tr >

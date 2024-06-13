@@ -54,7 +54,7 @@
                 $row=$stmt->execute();
                 $youjigoUpMessage='<p>”'.$youjigo.'”が登録されました。</p>
                     <a class="anchor" href="index.php">トップページへ</a>
-                    <a class="anchor" href="mypage.php">マイページへ</a>';
+                    <a class="anchor" href="index.php?mypage=1&selected_name='.$user_name.'">マイページへ</a>';
             }catch(PDOExeption $e){
                 $errorMessage="データベースエラー";
                 echo $e->getMessage();
@@ -86,7 +86,7 @@
             <li id="index"><a href="index.php"><span class="img"><img src="images/home.svg" alt="ホーム"></span><span class="moji">ホーム</span></a></li>
             <li id="back"><p id="goBack"><span class="img"><img src="images/goback.svg" alt="戻る"></span><span class="moji">戻る</span></li>
             <li id="youjigoUp"><a href="youjigoUp.php"><span class="img"><img src="images/post.svg" alt="投稿する"></span><span class="moji">投稿する</span></a></li>
-            <li id="maypage"><a href="mypage.php" ><span class="img"><img id="nav" src="images/mypage.svg" alt="マイページ"></span><span class="moji">マイページ</span></a></li>
+            <li id="maypage"><a href="index.php?mypage=1&selected_name=<?=$user_name?>" ><span class="img"><img id="nav" src="images/mypage.svg" alt="マイページ"></span><span class="moji">マイページ</span></a></li>
         </ul>
     </nav>
 </header>
