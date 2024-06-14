@@ -95,8 +95,7 @@ PUPUPAは「こどもが何て言っているのかわからない！」そん�
 |login.php|union.css<br>login.css|ログイン画面。ログインするか、サインアップページへ誘導。|
 |signUp.php|union.css<br>signUp.css|サインアップ画面。二人以上こどもがいる場合には、こどもの名前を一度に複数登録することができる。|
 |connect.php|←PHPのみ|①引数としてDB接続情報を持ったPDOインスタンスを返すconnect()関数。<br>②htmlspecialchars($data, ENT_QUOTES)をhsc($data)に簡略化するためのhsc($data)関数。|
-|index.php|union.css<br>formtable.css|トップページ。公開設定が”公開”になっている全てのアカウントの投稿を閲覧・検索できる。<br>デフォルトの表示は写真付きの新着順。|
-|mypage.php|union.css<br>formtable.css<br>mypage.css|マイページ。公開・非公開に関わらず、該当アカウントの投稿を全て閲覧・検索できる。<br>二人以上こどもがいる場合には、それぞれの名前で検索することもできる。<br>デフォルトの表示は、誕生日の若い順且つ新着順。|
+|index.php|union.css<br>formtable.css|①トップページ。公開設定が”公開”になっている全てのアカウントの投稿を閲覧・検索できる。<br>マイページ機能。公開・非公開に関わらずログイン中のユーザーの全ての投稿を検索・閲覧でき、編集もできる。|
 |youjigoUp.php|union.css<br>youjigoUp.css|幼児語投稿画面。二人以上こどもがいる場合には、こどもの名前を選んで投稿する。|
 |youjigoEdit.php|union.css<br>youigoEdit.css|投稿編集画面。投稿の編集と削除ができる。|
 |youjigoDel.php|union.css<br>youjigoDel.css|投稿削除画面。投稿を削除した後の画面。|
@@ -173,7 +172,8 @@ PUPUPAは「こどもが何て言っているのかわからない！」そん�
 | フォロイー | followee_id | int | NO | MUL | NOT NULL |   |
 | フォロワー | follower_id | int | NO  | MUL | NOT NULL |   |
 | フォロー状態 | follow_status | boolean | NO  |     | DEFAULT FALSE |   |
-| リクエスト | otonago | boolean | NO  |     | DEFAULT FALSE |   |
+| リクエスト | is_requested | boolean | NO  |     | DEFAULT FALSE |   |
+| メッセージ | follow_message | varchar(300) | YES  |     |  NULL |   |
 
 #### <span style="font-size:1em;">admin_kanriテーブル</span>
 | フィールド | Field | Type | Null | Key | Default | Extla |

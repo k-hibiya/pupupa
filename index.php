@@ -216,18 +216,8 @@
 
 <?php
 /*------------------------------------------- ↓ 検索結果表示用スクリプト -------------------------------------------*/
-    //require_once('connect.php'); //←loginしていないユーザーをlogin画面(login.php)にリダイレクトする
-        /* ↓ toLogin.phpの中身
 
-            session_start();
-
-            if(!isset($_SESSION['user_name'])){
-                header("Location:login.php");
-            }
-
-        */
-
-    if(isset($_GET['selected_followee'])){//フォロー中のアカウントまたはフォロー中のアカウント全てが選択された時
+    if(isset($_GET['selected_followee'])){//"フォロー中のアカウント"または"フォロー中のアカウントすべて"が選択された時
         $selected_followee = hsc($_GET['selected_followee']);
     }
 
@@ -241,10 +231,10 @@
         $sort = hsc($_GET['sort']);
     }
 
-    require_once ('midasi.php'); //←名前以外の検索キーワードを見出しとしてまとめて返す midasi() が入っている
+    require_once ('midasi.php'); //←検索キーワードを見出しとしてまとめて返す midasi() が入っている
     $midasi = midasi($YorO, $initial, $sort); //例、"ようじ語・すべて・あいうえお順"
 
-    if(!$_GET['selected_name'] && $selected_followee == "all"){//index.phpのデフォルトモード
+    if(!$_GET['selected_name'] && $selected_followee == "all"){ //"フォロー中のアカウントすべて"が選択された時
         /*------- ↓ 検索キーワードをまとめた見出しを作成する -------*/
         $searchMessage = "フォロー中・".$midasi;
 
@@ -252,7 +242,7 @@
         /*------- ↓ 検索キーワードをまとめた見出しを作成する -------*/
         $searchMessage = $midasi;
 
-    }else if($_GET{'selected_name'}){
+    }else if($_GET{'selected_name'}){ //account_search.phpでアカウント名が選択された時
         if(!isset($_GET['YorO'])) { //formが送られていない初期表示のSQL作成用の変数定義
             $kodomo_id = "みんな";
         }else if(isset($_GET['YorO'])) { //formが送られてきた場合のSQL作成用の変数定義

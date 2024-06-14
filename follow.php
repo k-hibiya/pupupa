@@ -1,13 +1,13 @@
 <?php
 session_start();
-require_once('connect.php'); 
+require_once('connect.php'); //データベース接続情報を持ったPDOインスタンスを返すconnect()関数。
 $pdo = connect();
 
 $response = array('success' => false, 'message' => '');
 
 $user_name = $_SESSION['user_name'];
 
-if($_GET['to_follow_name']){
+if($_GET['to_follow_name']){ //フォローボタンが押された時の処理
     $to_follow_name = $_GET['to_follow_name'];
     try {
         $sql = "SELECT is_public, user_id as to_follow_id FROM user WHERE user_name = :user_name";
@@ -41,7 +41,7 @@ if($_GET['to_follow_name']){
     }
 }
 
-if($_GET['to_unfollow_name']){
+if($_GET['to_unfollow_name']){ //フォロー中ボタンが押された時の処理。
     $to_unfollow_name = $_GET['to_unfollow_name'];
     try {
         $sql = "SELECT  user_id AS to_unfollow_id FROM user WHERE user_name = :user_name";

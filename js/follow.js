@@ -1,4 +1,4 @@
-function follow() {
+function follow() { //フォローボタンを押した時の処理
     const follow = document.querySelectorAll('p.follow');
     for(let i=0; i < follow.length; i++){
         follow[i].addEventListener('click', function() {
@@ -22,7 +22,7 @@ function follow() {
     }
 }
 
-function unfollow() {
+function unfollow() { //フォロー中ボタンを押した時の処理
     const unfollow = document.querySelectorAll('p.unfollow');
     for(let i=0; i < unfollow.length; i++){
         unfollow[i].addEventListener('click', function() {

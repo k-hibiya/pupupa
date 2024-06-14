@@ -46,7 +46,7 @@
 <main>
 <!------------------------------------------- ↓ 検索form ------------------------------------------->
     <form id="formBox" action="<?= $_SERVER['SCRIPT_NAME'] ?>" method="get">
-        <fieldset id="AorF">
+        <fieldset id="AorF"> 
             <legend>検索方法を選んでください</legend>
                 <label><input name="AorF" type="radio" value="all_accounts" checked="checked">すべてのアカウント</label>
                 <label><input name="AorF" type="radio" value="following">フォロー中のアカウント</label>
@@ -119,7 +119,7 @@
         $sort = hsc($_GET['sort']);
     }
 /*------- ↓ 検索キーワードをまとめた見出しを作成する -------*/
-    require_once ('midasi.php'); //←名前以外の検索キーワードを見出しとしてまとめて返す midasi() が入っている
+    require_once ('midasi.php'); //←検索キーワードを見出しとしてまとめて返す midasi() が入っている
     $midasi = midasi($AorF, $initial, $sort); //例、"ようじ語・すべて・あいうえお順"
     $searchMessage = $midasi;
 /*--- ↑ 検索キーワードをまとめた見出しを作成する --*/
@@ -210,7 +210,7 @@
         }else if($row) {
             $count_row = 0; 
             $stmt->execute();
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) { // ← DBから取得した分だけ結果を表示する。
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) { // ← アカウントの数によってボタンの表示を切り替えるためにアカウントの数を数える。
                 $count_row++;
             }
             if($AorF == "all_accounts" && $initial == "all_alphabets"){
