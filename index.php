@@ -356,6 +356,14 @@ require_once('mojiset.php');
                 $where = "is_deleted = 0 AND main.kodomo_id = :kodomo_id AND user_name = :selected_name AND follower_id = :user_id ";
                 $order_by = "ORDER BY posted_at desc";
             }
+        }else if($_GET['mypage'] == 1){
+            if($kodomo_id == "みんな"){
+                $where = "is_deleted = 0 AND user_name = :selected_name ";
+                $order_by = "ORDER BY  posted_at desc";
+            }else if($kodomo != "みんな"){
+                $where = "is_deleted = 0 AND main.kodomo_id = :kodomo_id AND user_name = :selected_name ";
+                $order_by = "ORDER BY posted_at desc";
+            }
         }else if($_GET['selected_name']){
             if($kodomo_id == "みんな"){
                 $where = "is_public = 1 AND is_deleted = 0 AND user_name = :selected_name ";
@@ -410,6 +418,13 @@ require_once('mojiset.php');
                 $stmt->bindParam(':kodomo_id', $kodomo_id, PDO::PARAM_INT);
                 $stmt->bindParam(':selected_name', $selected_name, PDO::PARAM_STR);
                 $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            }
+        }else if($_GET['mypage'] == 1){
+            if($kodomo_id == "みんな"){
+                $stmt->bindParam(':selected_name', $selected_name, PDO::PARAM_STR);
+            }else if($kodomo != "みんな"){
+                $stmt->bindParam(':kodomo_id', $kodomo_id, PDO::PARAM_INT);
+                $stmt->bindParam(':selected_name', $selected_name, PDO::PARAM_STR);
             }
         }else if($_GET['selected_name']){
             if($kodomo_id == "みんな"){
@@ -480,7 +495,7 @@ require_once('mojiset.php');
                                 </a>
                             </span>';
                 }
-                
+
                 if($row['photo'] == ""){ //写真をアップロードしないユーザー用の画像。乱数で挿入される
                     $num = mt_rand(1,6);
                     switch($num){
