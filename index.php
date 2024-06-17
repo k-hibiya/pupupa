@@ -71,11 +71,21 @@
         $selected_name="";
         if($_GET['selected_name']){
             $selected_name = $_GET['selected_name'];
+        }
+        $sql = "select is_public from user where user_name = :selected_name";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':selected_name', $selected_name, PDO::PARAM_STR);
+        $public = $stmt->execute();
+        $public = $stmt->fetch(PDO::FETCH_ASSOC);;
+
+        if((isset($_GET['selected_name']) && $public['is_public'] == 1) 
+            || ($_GET['selected_name'] == $user_name && isset($_GET['mypage'])) 
+            || (isset($_GET['selected_name']) && $_GET['selected_followee'] == "specific")){
             if($_GET['mypage'] == 1){
                 ?>
                     <input type="hidden" name="mypage" value=1>
     <?php
-        }
+            }
     ?>
         <input name="selected_name" type="hidden" value="<?=$selected_name?>">
         <fieldset id="kodomo_name">
@@ -253,7 +263,7 @@
         /*------- ↓ 検索キーワードをまとめた見出しを作成する -------*/
     
         if($kodomo_id == "みんな") {
-            $kodomo_name = "みんな";
+            $kodomo_name = $selected_name;
         }else if($kodomo_id != "みんな"){
             // ↓ formで送られてきたkodomo_idでこどもの名前を取得する。
             $sql = "SELECT kodomo_name FROM kodomo WHERE kodomo_id = :kodomo_id";
@@ -261,7 +271,7 @@
             $stmt->bindParam(':kodomo_id', $kodomo_id, PDO::PARAM_INT);
             $name=$stmt->execute();
             $name = $stmt->fetch(PDO::FETCH_ASSOC);
-            $kodomo_name = hsc($name['kodomo_name']);           
+            $kodomo_name = $selected_name."・".hsc($name['kodomo_name']);           
         }
         if($count['count(kodomo_id)'] >= 2){ //こどもの人数が二人以上だったら見出しの始まりが ”みんな・” となる
             $searchMessage = $kodomo_name."・";
@@ -271,7 +281,7 @@
             $stmt->bindParam(':user_name', $selected_name, PDO::PARAM_STR);
             $row=$stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $kodomo_name = hsc($row['kodomo_name']);
+            $kodomo_name =  $selected_name."・".hsc($row['kodomo_name']);
             $searchMessage = $kodomo_name."・";
         }
         $searchMessage = $searchMessage.$midasi; //例、”みんな・ようじ語・すべて・あいうえお順”   
@@ -334,25 +344,20 @@ require_once('mojiset.php');
 
         if($selected_followee == "all"){
             $where = "is_deleted = 0 AND follower_id = :user_id ";
-            $order_by = "ORDER BY posted_at desc";
         }else if(!$_GET['selected_name']){
             $where = "is_public = 1 AND is_deleted = 0 ";
-            $order_by = "ORDER BY posted_at desc";
         }else if(isset($_GET['selected_name']) && $selected_followee == "specific"){
             if($kodomo_id == "みんな"){
                 $where = "is_deleted = 0 AND user_name = :selected_name AND follower_id = :user_id ";
-                $order_by = "ORDER BY  posted_at desc";
             }else if($kodomo != "みんな"){
                 $where = "is_deleted = 0 AND main.kodomo_id = :kodomo_id AND user_name = :selected_name AND follower_id = :user_id ";
-                $order_by = "ORDER BY posted_at desc";
             }
-        }else if($_GET['mypage'] == 1){
+        }else if($_GET['mypage'] == 1 && $_GET['selected_name'] == $_SESSION['user_name']){
             if($kodomo_id == "みんな"){
                 $where = "is_deleted = 0 AND user_name = :selected_name ";
                 $order_by = "ORDER BY  posted_at desc";
             }else if($kodomo != "みんな"){
                 $where = "is_deleted = 0 AND main.kodomo_id = :kodomo_id AND user_name = :selected_name ";
-                $order_by = "ORDER BY posted_at desc";
             }
         }else if($_GET['selected_name']){
             if($kodomo_id == "みんな"){
@@ -360,7 +365,6 @@ require_once('mojiset.php');
                 $order_by = "ORDER BY  posted_at desc";
             }else if($kodomo != "みんな"){
                 $where = "is_public = 1 AND is_deleted = 0 AND main.kodomo_id = :kodomo_id AND user_name = :selected_name ";
-                $order_by = "ORDER BY posted_at desc";
             }
         }
 
@@ -409,7 +413,7 @@ require_once('mojiset.php');
                 $stmt->bindParam(':selected_name', $selected_name, PDO::PARAM_STR);
                 $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
             }
-        }else if($_GET['mypage'] == 1){
+        }else if($_GET['mypage'] == 1 && $_GET['selected_name'] == $_SESSION['user_name']){
             if($kodomo_id == "みんな"){
                 $stmt->bindParam(':selected_name', $selected_name, PDO::PARAM_STR);
             }else if($kodomo != "みんな"){
